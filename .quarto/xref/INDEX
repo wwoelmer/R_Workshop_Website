@@ -1,0 +1,23 @@
+{
+  "index.qmd": {
+    "index.html": "0403e0dc"
+  },
+  "about.qmd": {
+    "about.html": "8abee1db"
+  },
+  "Lesson5.qmd": {
+    "Lesson5.html": "742840da"
+  },
+  "workshops/R_Tutorial_5_2025.Rmd": {
+    "R_Tutorial_5_2025.html": "25f7c275"
+  },
+  "workshops/R_Tutorial_5_2025.qmd": {
+    "R_Tutorial_5_2025.html": "b37f833b"
+  },
+  "workshops/R_Tutorial_3_2025.qmd": {
+    "R_Tutorial_3_2025.html": "1e1edb0c"
+  },
+  "workshops/R_Tutorial_1_2025.qmd": {
+    "R_Tutorial_1_2025.html": "2c0d2883"
+  }
+}

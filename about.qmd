@@ -1,0 +1,9 @@
+---
+title: "About"
+---
+
+These tutorials were made by Whitney Woelmer and James Dare as a collaboration between the University of Waikato and the Bay of Plenty Regional Council. They are intended to provide an introductory understanding in using RStudio for manipulating, visualizing, and analyzing environmental data.
+
+The tutorials are provided for free and available to use by any.
+
+Please contact Whitney at wwoelmer\[at\]waikato.ac.nz or James at james.dare\[at\]boprc.govt.nz with any questions.

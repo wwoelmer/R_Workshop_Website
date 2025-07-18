@@ -163,6 +163,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#installing-packages" id="toc-installing-packages" class="nav-link" data-scroll-target="#installing-packages"><span class="header-section-number">1.1</span> Installing packages</a></li>
   <li><a href="#creating-objects" id="toc-creating-objects" class="nav-link" data-scroll-target="#creating-objects"><span class="header-section-number">1.2</span> Creating objects</a></li>
   <li><a href="#read-in-data-understand-data-classes-plot-data-create-new-column" id="toc-read-in-data-understand-data-classes-plot-data-create-new-column" class="nav-link" data-scroll-target="#read-in-data-understand-data-classes-plot-data-create-new-column"><span class="header-section-number">1.3</span> Read in data, understand data classes, plot data, create new column</a></li>
+  <li><a href="#dataframe-structure" id="toc-dataframe-structure" class="nav-link" data-scroll-target="#dataframe-structure"><span class="header-section-number">1.4</span> Dataframe structure</a></li>
+  <li><a href="#plotting-data" id="toc-plotting-data" class="nav-link" data-scroll-target="#plotting-data"><span class="header-section-number">1.5</span> Plotting data</a></li>
+  </ul></li>
+  <li><a href="#subset-data-plot-data-calculate-summary-statistics-write-a-csv" id="toc-subset-data-plot-data-calculate-summary-statistics-write-a-csv" class="nav-link" data-scroll-target="#subset-data-plot-data-calculate-summary-statistics-write-a-csv"><span class="header-section-number">2</span> Subset data, plot data, calculate summary statistics, write a csv</a>
+  <ul class="collapse">
+  <li><a href="#writing-a-.csv-file" id="toc-writing-a-.csv-file" class="nav-link" data-scroll-target="#writing-a-.csv-file"><span class="header-section-number">2.1</span> Writing a .csv file</a></li>
+  <li><a href="#calculating-summary-statistics" id="toc-calculating-summary-statistics" class="nav-link" data-scroll-target="#calculating-summary-statistics"><span class="header-section-number">2.2</span> Calculating summary statistics</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -213,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>package 'tidyverse' successfully unpacked and MD5 sums checked
 
 The downloaded binary packages are in
-    C:\Users\wwoelmer\AppData\Local\Temp\RtmpG8eOJ9\downloaded_packages</code></pre>
+    C:\Users\wwoelmer\AppData\Local\Temp\RtmpCGnG3k\downloaded_packages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># either '' or "" if it is not a recognized object in the environment</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'readxl'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -221,7 +228,7 @@ The downloaded binary packages are in
 <pre><code>package 'readxl' successfully unpacked and MD5 sums checked
 
 The downloaded binary packages are in
-    C:\Users\wwoelmer\AppData\Local\Temp\RtmpG8eOJ9\downloaded_packages</code></pre>
+    C:\Users\wwoelmer\AppData\Local\Temp\RtmpCGnG3k\downloaded_packages</code></pre>
 </div>
 </div>
 <p>Once all of these packages are installed you can load them using the ‘library’ function:</p>
@@ -235,6 +242,7 @@ The downloaded binary packages are in
 <pre><code>Warning: package 'readxl' was built under R version 4.4.3</code></pre>
 </div>
 </div>
+<p>You can check if you have loaded your package by clicking on the ‘Packages’ tab, and navigate to the package name you just loaded. There should be a check next to it if it has been loaded properly. If you don’t see the package at all, that means it has not been installed.</p>
 </section>
 <section id="creating-objects" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="creating-objects"><span class="header-section-number">1.2</span> Creating objects</h3>
@@ -257,7 +265,7 @@ The downloaded binary packages are in
 <pre><code>[1] "C:/Users/wwoelmer/OneDrive - The University of Waikato/Desktop/R_Workshop_Website/workshops"</code></pre>
 </div>
 </div>
-<p>This function tells you <em>where</em> your working directory is located. Since we are using a project, it will be where you put your project on your computer. If you don’t use a project, you will need to set a working directory using <code>setwd()</code>. NOTE: I DO NOT recommend setting working directories for reproducibility reasons. Projects are the best way to organize your files. But see other resources about this if desired: https://rpubs.com/em_/wdInR</p>
+<p>Running <code>getwd()</code> tells you <em>where</em> your working directory is located. Since we are using a project, your working directory will be where you put your project on your computer. If you don’t use a project, you will need to set a working directory using <code>setwd()</code>. However, I DO NOT recommend setting working directories for reproducibility reasons. If someone else wanted to run my code, they won’t have a <code>C:/Users/wwoelmer/Desktop/uni_files/</code> folder and will have to re-write the code to their own local directory…this causes lots of headaches. Projects are the best way to organize your files. But see other resources about this if desired: https://rpubs.com/em_/wdInR</p>
 <p>Now let’s read in our water quality data</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>wq <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">'./data/BoP_WQ_formatted.csv'</span>) <span class="co"># HINT: hit 'tab' as you're typin the directory to see a list of files in this directory</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -268,6 +276,345 @@ The downloaded binary packages are in
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(wq) <span class="co"># this opens up the dataframe to view, </span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># you can also do this by clicking on your dataframe ('wq') in the Environment at right</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="dataframe-structure" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="dataframe-structure"><span class="header-section-number">1.4</span> Dataframe structure</h3>
+<p>Now that we’ve read in our data, let’s look at its structure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   3673 obs. of  20 variables:
+ $ lake            : chr  "Okareka" "Okareka" "Okareka" "Okareka" ...
+ $ site            : chr  "1" "1" "1" "1" ...
+ $ date            : chr  "2000-07-11" "2000-08-23" "2000-09-28" "2000-10-25" ...
+ $ chla_mgm3_top   : num  5.9 7.7 3.7 0.9 1.9 ...
+ $ DRP_mgm3_bottom : num  2 0.5 0.5 4 6 2.25 3.5 3 2.9 5.85 ...
+ $ DRP_mgm3_top    : num  0.5 0.5 0.5 0.5 2.5 0.5 1 0.5 3.55 0.5 ...
+ $ NH4_mgm3_bottom : num  5 6 NA 11 8 3 15.5 7 20 31 ...
+ $ NH4_mgm3_top    : num  6 9 3.5 2 10 ...
+ $ NNN_mgm3_bottom : num  1 0.5 3 0.5 63 ...
+ $ NNN_mgm3_top    : num  0.5 1 0.5 47.5 0.5 ...
+ $ secchi_m        : num  6.5 6.9 9.1 11.1 8.4 9.3 9.4 9.6 9.6 9.7 ...
+ $ TN_mgm3_bottom  : num  208 184 205 198 293 ...
+ $ TN_mgm3_top     : num  176 184 196 268 234 ...
+ $ TP_mg_m3_bottom : num  7 8 5 NA 6 ...
+ $ TP_mgm3_top     : num  11 6 8.5 4 4 ...
+ $ turb_NTU_bottom : num  1.06 0.93 1.4 2.4 0.97 ...
+ $ turb_NTU_top    : num  1.5 1.1 0.75 0.7 0.83 ...
+ $ pH_bottom       : num  7.3 7.4 7.2 7.1 7.1 ...
+ $ pH_top          : num  7.2 7.4 7.55 7.9 7.85 ...
+ $ chla_mgm3_bottom: num  NA NA NA NA NA NA NA NA NA NA ...</code></pre>
+</div>
+</div>
+<p>Running the <code>str</code> function tells us the structure of each column in the dataframe. Now that we’ve looked at the structure of the <code>wq</code> dataframe, this shows us that the first three columns are of the character (chr) class, including <code>wq$date</code> But R has a specific data class for dates so we need to tell R that this is a date</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>wq<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(wq<span class="sc">$</span>date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Another formal class in R is a POSIXct object, which include date and time. Because datetimes are often in UTC, we will use as.POSIXct() to specify the time zone and ensure the right date</p>
+<p>In this case, we will create a new column called ‘datetime’ which store both date and time zone ETC/GMT+12</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>wq<span class="sc">$</span>datetime <span class="ot">&lt;-</span> <span class="fu">as.POSIXct</span>(wq<span class="sc">$</span>date, <span class="at">tz =</span> <span class="st">"ETC/GMT+12"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we’ve set the <code>date</code> column as class date and created a new column of class POSIXct, let’s look at the structure again</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   3673 obs. of  21 variables:
+ $ lake            : chr  "Okareka" "Okareka" "Okareka" "Okareka" ...
+ $ site            : chr  "1" "1" "1" "1" ...
+ $ date            : Date, format: "2000-07-11" "2000-08-23" ...
+ $ chla_mgm3_top   : num  5.9 7.7 3.7 0.9 1.9 ...
+ $ DRP_mgm3_bottom : num  2 0.5 0.5 4 6 2.25 3.5 3 2.9 5.85 ...
+ $ DRP_mgm3_top    : num  0.5 0.5 0.5 0.5 2.5 0.5 1 0.5 3.55 0.5 ...
+ $ NH4_mgm3_bottom : num  5 6 NA 11 8 3 15.5 7 20 31 ...
+ $ NH4_mgm3_top    : num  6 9 3.5 2 10 ...
+ $ NNN_mgm3_bottom : num  1 0.5 3 0.5 63 ...
+ $ NNN_mgm3_top    : num  0.5 1 0.5 47.5 0.5 ...
+ $ secchi_m        : num  6.5 6.9 9.1 11.1 8.4 9.3 9.4 9.6 9.6 9.7 ...
+ $ TN_mgm3_bottom  : num  208 184 205 198 293 ...
+ $ TN_mgm3_top     : num  176 184 196 268 234 ...
+ $ TP_mg_m3_bottom : num  7 8 5 NA 6 ...
+ $ TP_mgm3_top     : num  11 6 8.5 4 4 ...
+ $ turb_NTU_bottom : num  1.06 0.93 1.4 2.4 0.97 ...
+ $ turb_NTU_top    : num  1.5 1.1 0.75 0.7 0.83 ...
+ $ pH_bottom       : num  7.3 7.4 7.2 7.1 7.1 ...
+ $ pH_top          : num  7.2 7.4 7.55 7.9 7.85 ...
+ $ chla_mgm3_bottom: num  NA NA NA NA NA NA NA NA NA NA ...
+ $ datetime        : POSIXct, format: "2000-07-10 12:00:00" "2000-08-22 12:00:00" ...</code></pre>
+</div>
+</div>
+<p>Another data class we may want to use is ‘factor’. In <code>wq</code>, lake is listed as a character which means the different values have no particular order, and will appear alphabetically.</p>
+<p>Let’s say we wanted to order them by increasing maximum depth.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>wq<span class="sc">$</span>lake <span class="ot">&lt;-</span> <span class="fu">factor</span>(wq<span class="sc">$</span>lake, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">'Rotoehu'</span>, <span class="st">'Rerewhakaaitu'</span>, <span class="st">'Okaro'</span>,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'Tikitapu'</span>, <span class="st">'Rotokakahi'</span>, <span class="st">'Okareka'</span>,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'Rotorua'</span>, <span class="st">'Okataina'</span>, <span class="st">'Rotoma'</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">'Tarawera'</span>, <span class="st">'Rotoiti'</span>, <span class="st">'Rotomahana'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p><strong><em>Challenge 1:</em></strong> <em>What is the structure of <code>wq</code> now that you have updated the lake column?</em></p>
+<details>
+<summary>
+Click to see a solution
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wq)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   3673 obs. of  21 variables:
+ $ lake            : Factor w/ 12 levels "Rotoehu","Rerewhakaaitu",..: 6 6 6 6 6 6 6 6 6 6 ...
+ $ site            : chr  "1" "1" "1" "1" ...
+ $ date            : Date, format: "2000-07-11" "2000-08-23" ...
+ $ chla_mgm3_top   : num  5.9 7.7 3.7 0.9 1.9 ...
+ $ DRP_mgm3_bottom : num  2 0.5 0.5 4 6 2.25 3.5 3 2.9 5.85 ...
+ $ DRP_mgm3_top    : num  0.5 0.5 0.5 0.5 2.5 0.5 1 0.5 3.55 0.5 ...
+ $ NH4_mgm3_bottom : num  5 6 NA 11 8 3 15.5 7 20 31 ...
+ $ NH4_mgm3_top    : num  6 9 3.5 2 10 ...
+ $ NNN_mgm3_bottom : num  1 0.5 3 0.5 63 ...
+ $ NNN_mgm3_top    : num  0.5 1 0.5 47.5 0.5 ...
+ $ secchi_m        : num  6.5 6.9 9.1 11.1 8.4 9.3 9.4 9.6 9.6 9.7 ...
+ $ TN_mgm3_bottom  : num  208 184 205 198 293 ...
+ $ TN_mgm3_top     : num  176 184 196 268 234 ...
+ $ TP_mg_m3_bottom : num  7 8 5 NA 6 ...
+ $ TP_mgm3_top     : num  11 6 8.5 4 4 ...
+ $ turb_NTU_bottom : num  1.06 0.93 1.4 2.4 0.97 ...
+ $ turb_NTU_top    : num  1.5 1.1 0.75 0.7 0.83 ...
+ $ pH_bottom       : num  7.3 7.4 7.2 7.1 7.1 ...
+ $ pH_top          : num  7.2 7.4 7.55 7.9 7.85 ...
+ $ chla_mgm3_bottom: num  NA NA NA NA NA NA NA NA NA NA ...
+ $ datetime        : POSIXct, format: "2000-07-10 12:00:00" "2000-08-22 12:00:00" ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This shows that the lake column is now a factor!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+</section>
+<section id="plotting-data" class="level3" data-number="1.5">
+<h3 data-number="1.5" class="anchored" data-anchor-id="plotting-data"><span class="header-section-number">1.5</span> Plotting data</h3>
+<p>Now let’s plot the <code>wq</code> data using the <code>ggplot</code> system. <code>ggplot</code> requires a dataframe (here, <code>wq</code>), and then the aesthetics or <code>aes()</code>. This tells it what to put on the x-axis and the y-axis. We have also told it to color the points based on the column <code>site</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wq, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(date), <span class="at">y =</span> DRP_mgm3_top, <span class="at">color =</span> site)) <span class="sc">+</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="co"># this tells R how to "map" the data: in this case, use points</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>lake, <span class="at">scales =</span> <span class="st">'free'</span>) <span class="sc">+</span> <span class="co"># this makes a different panel for each lake, where the scale of both axes are different for each lake</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="co"># this sets a 'theme' for how the plot looks, this is the 'black and white' setting</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 322 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_1_2025_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+<p><strong><em>Challenge 2:</em></strong> <em>Create a different plot with <code>chla_mgm3_top</code> on the y-axis.</em></p>
+<details>
+<summary>
+Click to see a solution
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wq, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(date), <span class="at">y =</span> chla_mgm3_top, <span class="at">color =</span> site)) <span class="sc">+</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="co"># this tells R how to "map" the data: in this case, use points</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>lake, <span class="at">scales =</span> <span class="st">'free'</span>) <span class="sc">+</span> <span class="co"># this makes a different panel for each lake, where the scale of both axes are different for each lake</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="co"># this sets a 'theme' for how the plot looks, this is the 'black and white' setting</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 97 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_1_2025_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+<hr>
+</section>
+</section>
+<section id="subset-data-plot-data-calculate-summary-statistics-write-a-csv" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="subset-data-plot-data-calculate-summary-statistics-write-a-csv"><span class="header-section-number">2</span> Subset data, plot data, calculate summary statistics, write a csv</h2>
+<p>We are now going to learn to subset data. Here, let’s subset the <code>wq</code> dataframe to select just one lake, I’ll pick Rotoehu. Below is an example of subsetting using the base functions in R</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>rotoehu <span class="ot">&lt;-</span> wq[wq<span class="sc">$</span>lake<span class="sc">==</span><span class="st">'Rotoehu'</span>,] <span class="co"># the == means: look for an exact match</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># this uses the base R notation of subset via brackets and indexing [rows, columns]</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># here, we are saying take the dataframe wq</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># then in brackets, we subset. here, we are saying keep only the rows where </span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># column 'lake' equals 'Rotoehu'. then we have a comma, and nothing after it,</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># which means keep all of the columns</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A more intuitive way to subset dataframe is to use the <code>tidyverse</code> function <code>filter()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>rotoehu <span class="ot">&lt;-</span> wq <span class="sc">%&gt;%</span>  <span class="co"># this symbol is called a pipe, you can read it as 'whereby'</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(lake<span class="sc">==</span><span class="st">'Rotoehu'</span>) <span class="co"># here we say filter out every row where the lake column</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                          <span class="co"># equals 'Rotoehu' (remember R is sensitive to capitals)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using our subsetted dataframe <code>rotoehu</code>, let’s plot the data using ggplot. We can also clean up our axis labels a bit using the functions <code>xlab</code> and <code>ylab</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(rotoehu, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(date), <span class="at">y =</span> chla_mgm3_top)) <span class="sc">+</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'Date'</span>) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">'Chl-a (mg/m3)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_1_2025_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+<p><strong><em>Challenge 3:</em></strong> <em>Modify the ggplot code above to plot TN_mgm3_top in the <code>rotoehu</code> dataframe. Make sure your axis labels are accurate.</em></p>
+<details>
+<summary>
+Click to see a solution
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(rotoehu, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(date), <span class="at">y =</span> TN_mgm3_top)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Date"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Total Nitrogen (mg/m3)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 6 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_1_2025_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+<hr>
+<section id="writing-a-.csv-file" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="writing-a-.csv-file"><span class="header-section-number">2.1</span> Writing a .csv file</h3>
+<p>Now let’s save this subsetted data as a new csv file. First, we will bring up the help documentation for the function <code>write.csv()</code> so we can see what information (called arguments) the function needs us to input</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>?write.csv <span class="co"># bring up the help documentation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Based on the help documentation, we can see there are lots of arguments, but most of them have defaults. The information that R needs to know includes <code>x</code>, which is the object we are exporting (in this case, the dataframe <code>rotoehu</code>), <code>file</code> which corresponds to the the location where we want to save the file (in this case, we will save it in the <code>data</code> folder and called the file <code>rotoehu_wq.csv</code>), and we want to set the argument <code>row.names = FALSE</code> so that the file isn’t written with an extra column naming the rows</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(rotoehu, <span class="co"># this is the object we want to export</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">file =</span> <span class="st">'./data/rotoehu_wq.csv'</span>,  <span class="co"># the . means go from the working directory, </span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">row.names =</span> <span class="cn">FALSE</span>) <span class="co"># which is our project directory (check getwd() to clarify)</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>                             <span class="co"># then we are writing inside the 'data' folder</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                             <span class="co"># and can call the file whatever we want, with the </span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                             <span class="co"># .csv extension. here, I've named it 'rotoehu_wq_2000_2021.csv</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>                             <span class="co"># the row.names should be set as FALSE</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>                             <span class="co"># to avoid having an extra column in the csv file which lists the row number</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="calculating-summary-statistics" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="calculating-summary-statistics"><span class="header-section-number">2.2</span> Calculating summary statistics</h3>
+<p>Now that we’ve subset our data, let’s calculate some summary statistics and save them as a new object</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>mean_chl <span class="ot">&lt;-</span> <span class="fu">mean</span>(rotoehu<span class="sc">$</span>chla_mgm3_top)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mean_chl) <span class="do">#### hm that says NA, which means we need to remove the NA's before we take the mean</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>Hmmm that says the <code>mean_chl</code> is <code>NA</code>. Look at the <code>rotoehu</code> dataframe: are all the chla values NA? No…which means there must be some NA’s in there which have thrown R off. We need to remove the NA’s before we take the mean. Look at help documentation (?mean) and read about the <code>na.rm</code> argument. We need to add the argument na.rm, then rerun the mean calculation</p>
+<hr>
+<p><strong><em>Challenge 4:</em></strong> <em>Use the <code>na.rm</code> argument within the <code>mean</code> function to calculate the mean chl-a in Lake Rotoehu.</em></p>
+<details>
+<summary>
+Click to see a solution
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>mean_chl <span class="ot">&lt;-</span> <span class="fu">mean</span>(rotoehu<span class="sc">$</span>chla_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mean_chl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 11.24727</code></pre>
+</div>
+</div>
+</details>
+<hr>
+<hr>
+<p><strong><em>Challenge 5:</em></strong> <em>You’re on a roll! Not calculate the standard deviation using the function <code>sd()</code>. Don’t forget to use the <code>na.rm</code> function.</em></p>
+<details>
+<summary>
+Click to see a solution
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>sd_chl <span class="ot">&lt;-</span> <span class="fu">sd</span>(rotoehu<span class="sc">$</span>chla_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sd_chl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.716998</code></pre>
+</div>
+</div>
+</details>
+<hr>
+<hr>
+<p><strong><em>Challenge 6:</em></strong> <em>Lastly, calculate the minimum and maximum values of chl-a in Lake Rotoehu.</em></p>
+<details>
+<summary>
+Click to see a solution
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>min_chl <span class="ot">&lt;-</span> <span class="fu">min</span>(rotoehu<span class="sc">$</span>chla_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>max_chl <span class="ot">&lt;-</span> <span class="fu">max</span>(rotoehu<span class="sc">$</span>chla_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(min_chl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.34</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(max_chl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 96.4</code></pre>
+</div>
+</div>
+</details>
+<hr>
+<hr>
+<p><strong><em>Challenge 7:</em></strong> <em>To wrap up this section, let’s have a big challenge where you repeat this excercise but for Lake Rotoma DRP instead. Remember that you need to 1) subset the original <code>wq</code> dataframe using either indexing or filter(), 2) plot the surface (top) DRP data for Lake Rotoma, 3) calculate the mean, sd, minimum, and maximum of DRP.</em></p>
+<details>
+<summary>
+Click to see a solution
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>rotoma <span class="ot">&lt;-</span> wq <span class="sc">%&gt;%</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(lake <span class="sc">==</span> <span class="st">"Rotoma"</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(rotoma, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">as.Date</span>(date), <span class="at">y =</span> DRP_mgm3_top)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Date"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Dissolved Reactive Phosporus at surface (mg/m3)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 6 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_1_2025_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(rotoma<span class="sc">$</span>DRP_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.517479</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(rotoma<span class="sc">$</span>DRP_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.647017</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(rotoma<span class="sc">$</span>DRP_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(rotoma<span class="sc">$</span>DRP_mgm3_top, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10.1286</code></pre>
+</div>
+</div>
+</details>
+<hr>
 
 
 </section>

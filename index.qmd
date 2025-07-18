@@ -1,11 +1,10 @@
 ---
-title: "R_Workshops_Website"
+title: "Introduction to R Workshop Series"
 ---
 
-This is a Quarto website.
+This website hosts the materials for a 6-part Introduction to R Workshop series. These tutorials were developed in May-June 2025 as a set of resources for training users in manipulating, visualizing, and analyzing environmental data.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+You can read through the tutorials on the website, but we recommend copying the code to your local RStudio, running through the script, and completing the challenges without looking at the answers!
 
-```{r}
-1 + 1
-```
+Click [here](files/Introduction_to_R.pptx) to see an introductory presentation before completing the tutorials. 
+

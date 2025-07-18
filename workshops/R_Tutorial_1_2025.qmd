@@ -45,6 +45,11 @@ library(tidyverse)
 library(readxl)
 ```
 
+You can check if you have loaded your package by clicking on the ‘Packages’ tab, 
+and navigate to the package name you just loaded. There should be a check next
+to it if it has been loaded properly. If you don't see the package at all,
+that means it has not been installed.
+
 ### Creating objects
 One of the main ways that you will interact with R is to create and re-use objects. Let's just creating a few objects ourselves. We did this for an in-person workshop where we counted the number of participants and instructors. However, you can change the code whatever you like! If you're alone, maybe try changing it to the number of doorknobs and windows in your room.
 
@@ -66,7 +71,15 @@ You can read in many different file formats into R and each will use their own f
 getwd()
 ```
 
-This function tells you *where* your working directory is located. Since we are using a project, it will be where you put your project on your computer. If you don't use a project, you will need to set a working directory using `setwd()`. NOTE: I DO NOT recommend setting working directories for reproducibility reasons. Projects are the best way to organize your files. But see other resources about this if desired: https://rpubs.com/em_/wdInR
+Running `getwd()` tells you *where* your working directory is located. Since we 
+are using a project, your working directory will be where you put your project 
+on your computer. If you don't use a project, you will need to set a 
+working directory using `setwd()`. However, I DO NOT recommend setting working 
+directories for reproducibility reasons. If someone else wanted to run my code,
+they won't have a `C:/Users/wwoelmer/Desktop/uni_files/` folder and will have to
+re-write the code to their own local directory...this causes lots of headaches.
+Projects are the best way to organize your files. But see other resources about 
+this if desired: https://rpubs.com/em_/wdInR
 
 Now let's read in our water quality data
 
@@ -83,4 +96,264 @@ View(wq) # this opens up the dataframe to view,
 # you can also do this by clicking on your dataframe ('wq') in the Environment at right
 ```
 
+### Dataframe structure
+Now that we've read in our data, let's look at its structure. 
+
+```{r}
+str(wq)
+```
+
+Running the `str` function tells us the structure of each column in the dataframe. Now that we've looked at the structure of the `wq` dataframe, this shows us that
+the first three columns are of the character (chr) class, including `wq$date` 
+But R has a specific data class for dates so we need to tell R that this is a date
+
+```{r}
+wq$date <- as.Date(wq$date)
+```
+
+Another formal class in R is a POSIXct object, which include date and time.
+Because datetimes are often in UTC, we will use as.POSIXct() to specify the 
+time zone and ensure the right date
+
+In this case, we will create a new column called 'datetime' which store both date
+and time zone ETC/GMT+12
+
+```{r}
+wq$datetime <- as.POSIXct(wq$date, tz = "ETC/GMT+12")
+```
+
+Now that we've set the `date` column as class date and created a new column of class
+POSIXct, let's look at the structure again
+
+```{r}
+str(wq)
+```
+
+Another data class we may want to use is 'factor'. In `wq`, lake is listed as a character
+which means the different values have no particular order, and will appear alphabetically.
+
+Let's say we wanted to order them by increasing maximum depth.
+
+```{r}
+wq$lake <- factor(wq$lake, levels = c('Rotoehu', 'Rerewhakaaitu', 'Okaro',
+                                      'Tikitapu', 'Rotokakahi', 'Okareka',
+                                      'Rotorua', 'Okataina', 'Rotoma',
+                                      'Tarawera', 'Rotoiti', 'Rotomahana'))
+```
+
+___
+***Challenge 1:*** *What is the structure of `wq` now that you have updated the lake column?*
+
+<details>
+<summary>Click to see a solution</summary>
+
+```{r message=FALSE,tidy=TRUE}
+
+str(wq)
+
+# This shows that the lake column is now a factor!
+
+```
+</details>
+
+___
+
+### Plotting data
+Now let's plot the `wq` data using the `ggplot` system. `ggplot` requires a 
+dataframe (here, `wq`), and then the aesthetics or `aes()`. This tells it what 
+to put on the x-axis and the y-axis. We have also told it to color the points 
+based on the column `site`.
+
+```{r}
+ggplot(wq, aes(x = as.Date(date), y = DRP_mgm3_top, color = site)) + 
+  geom_point() + # this tells R how to "map" the data: in this case, use points
+  facet_wrap(~lake, scales = 'free') + # this makes a different panel for each lake, where the scale of both axes are different for each lake
+  theme_bw() # this sets a 'theme' for how the plot looks, this is the 'black and white' setting
+```
+
+___
+***Challenge 2:*** *Create a different plot with `chla_mgm3_top` on the y-axis.*
+
+<details>
+<summary>Click to see a solution</summary>
+
+```{r message=FALSE,tidy=TRUE}
+
+ggplot(wq, aes(x = as.Date(date), y = chla_mgm3_top, color = site)) + 
+  geom_point() + # this tells R how to "map" the data: in this case, use points
+  facet_wrap(~lake, scales = 'free') + # this makes a different panel for each lake, where the scale of both axes are different for each lake
+  theme_bw() # this sets a 'theme' for how the plot looks, this is the 'black and white' setting
+
+```
+</details>
+
+___
+
+## Subset data, plot data, calculate summary statistics, write a csv
+
+We are now going to learn to subset data. Here, let's subset the `wq` dataframe
+to select just one lake, I'll pick Rotoehu. Below is an example of subsetting
+using the base functions in R
+
+```{r}
+rotoehu <- wq[wq$lake=='Rotoehu',] # the == means: look for an exact match
+  # this uses the base R notation of subset via brackets and indexing [rows, columns]
+  # here, we are saying take the dataframe wq
+  # then in brackets, we subset. here, we are saying keep only the rows where 
+  # column 'lake' equals 'Rotoehu'. then we have a comma, and nothing after it,
+  # which means keep all of the columns
+```
+
+
+A more intuitive way to subset dataframe is to use the `tidyverse` function `filter()`
+
+```{r}
+rotoehu <- wq %>%  # this symbol is called a pipe, you can read it as 'whereby'
+  filter(lake=='Rotoehu') # here we say filter out every row where the lake column
+                          # equals 'Rotoehu' (remember R is sensitive to capitals)
+```
+
+Using our subsetted dataframe `rotoehu`, let's plot the data using ggplot. We can also clean up our axis labels a bit using the functions `xlab` and `ylab`.
+
+```{r}
+ggplot(rotoehu, aes(x = as.Date(date), y = chla_mgm3_top)) + 
+  geom_point() +
+  theme_bw() +
+  xlab('Date') +
+  ylab('Chl-a (mg/m3)')
+```
+
+
+___
+***Challenge 3:*** *Modify the ggplot code above to plot TN_mgm3_top in the `rotoehu` dataframe. Make sure your axis labels are accurate.*
+
+<details>
+<summary>Click to see a solution</summary>
+
+```{r message=FALSE,tidy=TRUE}
+ggplot(rotoehu, aes(x = as.Date(date), y = TN_mgm3_top)) + 
+  geom_point() +
+  theme_bw() +
+  xlab('Date') +
+  ylab('Total Nitrogen (mg/m3)')
+```
+</details>
+
+___
+
+### Writing a .csv file
+Now let's save this subsetted data as a new csv file. First, we will bring up the 
+help documentation for the function `write.csv()` so we can see what information
+(called arguments) the function needs us to input
+
+```{r, eval = FALSE}
+?write.csv # bring up the help documentation
+```
+
+Based on the help documentation, we can see there are lots of arguments, but most
+of them have defaults. The information that R needs to know includes `x`, which is
+the object we are exporting (in this case, the dataframe `rotoehu`), `file` which
+corresponds to the the location where we want to save the file (in this case,
+we will save it in the `data` folder and called the file `rotoehu_wq.csv`), 
+and we want to set the argument `row.names = FALSE` so that the file isn't written with
+an extra column naming the rows
+
+```{r, eval = FALSE}
+write.csv(rotoehu, # this is the object we want to export
+          file = './data/rotoehu_wq.csv',  # the . means go from the working directory, 
+          row.names = FALSE) # which is our project directory (check getwd() to clarify)
+                             # then we are writing inside the 'data' folder
+                             # and can call the file whatever we want, with the 
+                             # .csv extension. here, I've named it 'rotoehu_wq_2000_2021.csv
+                             # the row.names should be set as FALSE
+                             # to avoid having an extra column in the csv file which lists the row number
+```
+
+### Calculating summary statistics
+Now that we've subset our data, let's calculate some summary statistics and save 
+them as a new object
+
+```{r}
+mean_chl <- mean(rotoehu$chla_mgm3_top)
+print(mean_chl) #### hm that says NA, which means we need to remove the NA's before we take the mean
+```
+
+
+Hmmm that says the `mean_chl` is `NA`. Look at the `rotoehu` dataframe: are all the
+chla values NA? No...which means there must be some NA's in there which have thrown
+R off. We need to remove the NA's before we take the mean. Look at help 
+documentation (?mean) and read about the `na.rm` argument. We need to add the 
+argument na.rm, then rerun the mean calculation
+
+___
+***Challenge 4:*** *Use the `na.rm` argument within the `mean` function to calculate the mean chl-a in Lake Rotoehu.*
+
+<details>
+<summary>Click to see a solution</summary>
+
+```{r message=FALSE,tidy=TRUE}
+mean_chl <- mean(rotoehu$chla_mgm3_top, na.rm = TRUE)
+print(mean_chl)
+```
+</details>
+
+___
+
+
+___
+***Challenge 5:*** *You're on a roll! Not calculate the standard deviation using the function `sd()`. Don't forget to use the `na.rm` function.*
+
+<details>
+<summary>Click to see a solution</summary>
+
+```{r message=FALSE,tidy=TRUE}
+sd_chl <- sd(rotoehu$chla_mgm3_top, na.rm = TRUE)
+print(sd_chl)
+```
+</details>
+
+___
+
+
+___
+***Challenge 6:*** *Lastly, calculate the minimum and maximum values of chl-a in Lake Rotoehu.*
+
+<details>
+<summary>Click to see a solution</summary>
+
+```{r message=FALSE,tidy=TRUE}
+min_chl <- min(rotoehu$chla_mgm3_top, na.rm = TRUE)
+max_chl <- max(rotoehu$chla_mgm3_top, na.rm = TRUE)
+print(min_chl)
+print(max_chl)
+```
+</details>
+
+___
+
+
+___
+***Challenge 7:*** *To wrap up this section, let's have a big challenge where you repeat this excercise but for Lake Rotoma DRP instead. Remember that you need to 1) subset the original `wq` dataframe using either indexing or filter(), 2) plot the surface (top) DRP data for Lake Rotoma, 3) calculate the mean, sd, minimum, and maximum of DRP.*
+
+<details>
+<summary>Click to see a solution</summary>
+
+```{r message=FALSE,tidy=TRUE}
+rotoma <- wq %>% 
+  filter(lake=='Rotoma')
+
+ggplot(rotoma, aes(x = as.Date(date), y = DRP_mgm3_top)) + 
+  geom_point() +
+  theme_bw() +
+  xlab('Date') +
+  ylab('Dissolved Reactive Phosporus at surface (mg/m3)')
+
+mean(rotoma$DRP_mgm3_top, na.rm = TRUE)
+sd(rotoma$DRP_mgm3_top, na.rm = TRUE)
+min(rotoma$DRP_mgm3_top, na.rm = TRUE)
+max(rotoma$DRP_mgm3_top, na.rm = TRUE)
+```
+</details>
+
+___
 

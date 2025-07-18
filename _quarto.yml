@@ -1,6 +1,8 @@
 project:
   type: website
 
+output-dir: docs
+
 website:
   title: "Introduction to R Workshop Series"
   navbar:
@@ -22,6 +24,3 @@ format:
     toc: true
 
 editor: visual
-
-output-dir: docs
-

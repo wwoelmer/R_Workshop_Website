@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="James Dare">
+
+<title>Lesson 6: Trend Analysis – Introduction to R Workshop Series</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-df479d6c4d77d0e0dfbcb5361179d7fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Introduction to R Workshop Series</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_1_2025.html"> 
+<span class="menu-text">Lesson 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_2_2025.html"> 
+<span class="menu-text">Lesson 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_3_2025.html"> 
+<span class="menu-text">Lesson 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_4_2025.html"> 
+<span class="menu-text">Lesson 4</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_5_2025.html"> 
+<span class="menu-text">Lesson 5</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../workshops/R_Tutorial_6_2025.html" aria-current="page"> 
+<span class="menu-text">Lesson 6</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
+  <li><a href="#macroinvertebrate-data" id="toc-macroinvertebrate-data" class="nav-link" data-scroll-target="#macroinvertebrate-data"><span class="header-section-number">2</span> Macroinvertebrate Data</a></li>
+  <li><a href="#river-water-quality-data" id="toc-river-water-quality-data" class="nav-link" data-scroll-target="#river-water-quality-data"><span class="header-section-number">3</span> River Water Quality Data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lesson 6: Trend Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>James Dare </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
+<p>This lesson is designed to introduce you to the ‘LWPTrends’ package. This package is an internal package but has been built around functions developed by Ton Snelder and Caroline Fraser from LWP. Additional functions have been developed by me (James Dare) to make the LWP functions more applicable to BOPRC data.</p>
+<p>The main packages that we will use in this tutorial are:</p>
+<ul>
+<li><strong>tidyverse</strong></li>
+<li><strong>outliers</strong></li>
+<li><strong>plyr</strong></li>
+<li><strong>ggpubr</strong></li>
+<li><strong>NADA</strong></li>
+<li><strong>gam</strong></li>
+<li><strong>conflicted</strong></li>
+</ul>
+<p>Before attempting to install these packages, make sure your Primary CRAN Repository is set to:</p>
+<ul>
+<li><strong>“New Zealand [https] - University of Auckland”</strong></li>
+</ul>
+<p>To check this, click ‘Tools’ –&gt; ‘Global Options’ –&gt; ‘Packages’. Click ‘Change’ if you need to adjust this.</p>
+<p>You can download most packages by clicking on the ‘Install’ button on the ‘packages’ tab in the lower right window pane. Then in the Install Packages popup, select ‘Repository (CRAN)’ from the ‘Install from’ drop box and type the name of the package you wish to download (e.g., dplyr).</p>
+<p>We will also use an internal package:</p>
+<center>
+<img src="./Images/LWPTrends.jpg" class="img-fluid" style="width:40.0%">
+</center>
+<p>LWPTrends will need to be installed manually from a tar file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"V:/Applications/R Course/Packages/LWPTrends_1.0.0.tar.gz"</span>, <span class="at">repos =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"source"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Once all of these packages are installed you can load them using the ‘library’ function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(outliers)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plyr)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NADA)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gam)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(LWPTrends)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(conflicted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For those that are new to R, ‘plyr’ is the old version of dplyr, which is part of the tidyverse. Unfortunately, the LWPTrends package relies heavily on ‘plyr’ so we have to use it, however tidyverse uses the newer version, ‘dplyr’. This causes problems because both packages have functions with the same name, yet operate in different ways (remember that conversation we had on the first day).</p>
+<p>We will manage this problem using the ‘conflicted’ package. This package allows us to tell R to prefer the ‘dplyr’ versions of these functions over the ‘plyr’ versions. There are only seven conflicted functions so it shouldn’t affect the functionality of the ‘LWPTrends’ package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"summarise"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"mutate"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"arrange"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"mutate"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"rename"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"select"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"summarise"</span>, <span class="st">"dplyr"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">conflict_prefer</span>(<span class="st">"filter"</span>, <span class="st">"dplyr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Today we will be looking at two different datasets which we will use to run two different variants of trend analysis. We will start with a simple example of annual MCI data from ‘Waiari at Te Puke Highway’, before moving on to a monthly NNN dataset from Rangitaiki at Te Teko. We will use the latter to demonstrate seasonal and co-variate (flow) adjustment. Both datasets can be found in the ‘Datasets’ folder.</p>
+<p><br>
+</p>
+</section>
+<section id="macroinvertebrate-data" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="macroinvertebrate-data"><span class="header-section-number">2</span> Macroinvertebrate Data</h2>
+<p>Let’s start by loading the macroinvertebrate dataset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>MCI_Data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/MCI_Waiari.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Open up the dataset by double clicking on the ‘MCI_Data’ object in the data panel (upper right corner). Notice that there are no date or time stamps. We only have a ‘Period’ to work with. Trend analysis requires a time stamp, so let’s convert the period into a date where we assume the sample is collected on the 1st January each year. First we need to create a column called ‘Year’ which takes the year component from the ‘Period’ string. The substring function allows you to subset a string, you just need to provide a point to start and end. In this case, we want to start at the 1st character and end at the 4th character.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>MCI_Data <span class="ot">&lt;-</span> MCI_Data <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="fu">substring</span>(Period, <span class="dv">1</span>, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we need to convert the year into a date object where the day and month will be ‘01-01’ i.e., the 1st of January.</p>
+<hr>
+<p><strong><em>Challenge 1:</em></strong> <em>Create another column called ‘myDate’ which is equal to the column ‘Year’ combined with ‘01-01’. Hint - you will need to do this in two steps. First create a string using the ‘paste0’ combined with ‘01-01’. Secondly, convert that string to a Date using as.Date(). You can do this in one line of code. Finally, select the columns: ‘Aquarius._SIteID’,‘myDate’,‘MCI’, and create a new column called ‘analyte’ which is equal to “MCI”.</em></p>
+<details>
+<summary>
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MCI_Data <span class="ot">&lt;-</span> MCI_Data <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">myDate =</span> <span class="fu">as.Date</span>(<span class="fu">paste0</span>(Year, <span class="st">"-01-01"</span>), <span class="at">tz =</span> <span class="st">"etc/GMT+12"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Aquarius._SIteID, myDate, MCI) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">analyte =</span> <span class="st">"MCI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<p>Great. Look at your dataset and you should have four columns: ‘Aquarius._SIteID’,‘myDate’,‘MCI’, and ‘analyte’. The LWPTrends package requires specific names for some columns in order for functions to work. The timestamp should be in a date format called ‘myDate’ and the parameter should be called ‘analyte’.</p>
+<p>Now we have to prepare the dataset for trend analysis. This is set out in seven repeatable steps which each involve a specific LWPTrends function.</p>
+<p><br>
+</p>
+<ol type="1">
+<li><strong>Append date information to the dataset.</strong></li>
+</ol>
+<p>The first function is <strong><em>‘GetMoreDateInfo()’</em></strong>. This adds on the necessary information that allows steps 3-6 to determine which year, month, and quarter each date relates to.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Add on time increment and extra date information - </span><span class="al">NOTE</span><span class="co"> if this dataset was is based on Water Years firstMonth = 7</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>MCI_Data <span class="ot">&lt;-</span> <span class="fu">GetMoreDateInfo</span>(MCI_Data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br>
+</p>
+<ol start="2" type="1">
+<li><strong>Process censored values.</strong></li>
+</ol>
+<p>Now we need to apply the <strong><em>‘RemoveAlphaDetect()’</em></strong> function, which takes a dataframe that might include censored values (specified as the prefix &gt; or &lt;,column is type character) and returns face values and information about the nature of the censoring.</p>
+<p>In this case, our data is uncensored, but we still need to run this function to move to the next stage.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Process censored values</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>MCI_Data <span class="ot">&lt;-</span> <span class="fu">RemoveAlphaDetect</span>(MCI_Data,<span class="at">ColToUse=</span><span class="st">"MCI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This function will provide a new column ‘RawValue’ with the raw data, alongside two additional columns that detail whether each value was censored and what type of censor it was. This information is passed to the trend analysis function in future steps.</p>
+<p>The LWPTrends package handles censored values in two ways. For point statistics such as means, standard deviations or quantiles, left censored values are imputed using the regression on order statistics (ROS) method, while right censored values are imputed using the survreg method. Censored values used to calculate Kendall’s S and its p-value are handled in the manner recommended by Helsel (2005, 2012). Refer to the <a href="https://github.com/JamesBOPRC/LWPTrends/blob/main/Reference_Doc/LWPTrendsHelp_v2502.pdf">LWPTrends help document</a> for more information.</p>
+<p><br>
+</p>
+<ol start="3" type="1">
+<li><strong>Inspect the data.</strong></li>
+</ol>
+<p>Now it is time to inspect our dataset using <strong><em>‘InspectTrendData()’</em></strong>. This function will provide important diagnostic output, while also appending the dataset with additional columns that are necessary to continue with trend analysis. There are a number of arguments that can be input to the InspectTrendData() function, but the one that we need to worry about is the ‘EndYear’, ‘propYearTol’, and ‘propIncrTol’. End year, is just the year that you want the analysis to end. This is required, but can also be used in conjunction with ‘TrendPeriod’ to shorten the dataset. The ‘propYearTol’, and ‘propIncrTol’ refer to the acceptable proportion of years and time increments that must have observations. The default for these values is 0.9, i.e., 90% of years and time increments must have values.</p>
+<p>Let’s run the data inspection using these defaults to see what happens.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MCI_Inspect <span class="ot">&lt;-</span> <span class="fu">InspectTrendData</span>(MCI_Data,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">EndYear =</span> <span class="fu">max</span>(MCI_Data<span class="sc">$</span>Year),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">ReturnALLincr=</span><span class="cn">TRUE</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">do.plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">mymain=</span><span class="st">"Example 1"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">UseMidObs=</span><span class="cn">TRUE</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Year=</span><span class="st">"Year"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">propYearTol =</span> <span class="fl">0.9</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                                <span class="at">propIncrTol =</span> <span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The InspectTrendData object contains three sub-objects, stored in a special type of object class called a ‘list’. You can access sub-objects using the syntax ‘ListName[[SubList_Number]]’. The first sub-object is an amended dataframe, the second is the output of an analysis that determines the best time increment to run trend analysis on, and the third produces a series of diagnostic plots.</p>
+<p>We need to look at the second sub-list object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>MCI_Inspect[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Incr TrendPeriodL nobs nYear  propYear nIncrYear propIncrYear propCen
+1   Month           21   18    18 0.8571429        18   0.07142857       0
+2 BiMonth           21   18    18 0.8571429        18   0.14285714       0
+3     Qtr           21   18    18 0.8571429        18   0.21428571       0
+4   BiAnn           21   18    18 0.8571429        18   0.42857143       0
+5    Year           21   18    18 0.8571429        18   0.85714286       0
+  nCenLevelsLT nCenLevelsGT nFlow DataOK
+1            0            0     0  FALSE
+2            0            0     0  FALSE
+3            0            0     0  FALSE
+4            0            0     0  FALSE
+5            0            0     0  FALSE</code></pre>
+</div>
+</div>
+<p>This output shows the possible time increments in the leftmost column, followed by a range of other column outputs. Notice the final column ‘DataOK’ states FALSE for all time increments, which is essentially saying that we don’t have enough data to satisfy any of the condtions for any time increment. Take a look at the ‘propYear’ and ‘propIncrYear’ columns and not the values. Any thoughts on why his might have failed?</p>
+<p>This might make more sense if we look at the diagnostic plots. The complicated looking ‘ggarrange’ call below is complicated because it is calling sub-list components directly rather than saving them as different objects (e.g.&nbsp;plot1, plot2, plot3 etc.). It is also nesting a three-plot ggarrange object as the second row of another ggplot object. This allows you to see a large version of the time series data, and have smaller versions of the matrix plots. This comes directly from Ton and Caroline (don’t blame me..), but I think it makes a very handy diagnostic dashboard.</p>
+<p><br>
+</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(MCI_Inspect[[<span class="dv">3</span>]][[<span class="dv">1</span>]],</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">ggarrange</span>(MCI_Inspect[[<span class="dv">3</span>]][[<span class="dv">2</span>]],</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                    MCI_Inspect[[<span class="dv">3</span>]][[<span class="dv">3</span>]],</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                    MCI_Inspect[[<span class="dv">3</span>]][[<span class="dv">4</span>]],<span class="at">nrow=</span><span class="dv">1</span>,<span class="at">align=</span><span class="st">"h"</span>),<span class="at">nrow=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Hopefully you can see that we have gaps in 2009, 2011, and 2012. These gaps mean that we only have observations for 85% of years and 85% of time increments if we run an annual trend analysis.</p>
+<p>We have two options, either we reduce the trend analysis period to say 2013-2022, or we make proportion of observations requirement more lenient. Let’s do the latter.</p>
+<hr>
+<p><strong><em>Challenge 2:</em></strong> <em>Add ‘Change the propYearTol and propInrTol requirements to 0.8 in the InspectTrendData function. Make sure this is defined as an object named ’MCI_Inspect’. Look at the second sub-list object to see if anything has changed</em></p>
+<details>
+<summary style="display: inline-block;">
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>MCI_Inspect <span class="ot">&lt;-</span> <span class="fu">InspectTrendData</span>(MCI_Data,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">EndYear =</span> <span class="fu">max</span>(MCI_Data<span class="sc">$</span>Year),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">ReturnALLincr=</span><span class="cn">TRUE</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">do.plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">mymain=</span><span class="st">"Example 1"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">UseMidObs=</span><span class="cn">TRUE</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Year=</span><span class="st">"Year"</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">propYearTol =</span> <span class="fl">0.8</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                                <span class="at">propIncrTol =</span> <span class="fl">0.8</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>MCI_Inspect[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Incr TrendPeriodL nobs nYear  propYear nIncrYear propIncrYear propCen
+1   Month           21   18    18 0.8571429        18   0.07142857       0
+2 BiMonth           21   18    18 0.8571429        18   0.14285714       0
+3     Qtr           21   18    18 0.8571429        18   0.21428571       0
+4   BiAnn           21   18    18 0.8571429        18   0.42857143       0
+5    Year           21   18    18 0.8571429        18   0.85714286       0
+  nCenLevelsLT nCenLevelsGT nFlow DataOK
+1            0            0     0  FALSE
+2            0            0     0  FALSE
+3            0            0     0  FALSE
+4            0            0     0  FALSE
+5            0            0     0   TRUE</code></pre>
+</div>
+</div>
+</details>
+<hr>
+<p>Hooray, the ‘Year’ time increment now has ‘TRUE’ in the ‘DataOK’ column. We can move on, but first we need to save the appended datasets for the next step.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MCI_Data <span class="ot">&lt;-</span> MCI_Inspect[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="4" type="1">
+<li><strong>Check for seasonality</strong></li>
+</ol>
+<p>We can skip this step given that we are using annual data, i.e., there are no seasons.</p>
+<ol start="5" type="1">
+<li><strong>Define a co-variate and test relationship.</strong></li>
+</ol>
+<p>Again, we can skip this part given that we will not be adjusting our data based on a co-variate. We will explore this with the WQ dataset.</p>
+<ol start="6" type="1">
+<li><strong>Run trend analysis.</strong></li>
+</ol>
+<p>We know that there is no seasonality in our data so we will use the function <strong><em>‘NonSeasonalTrendAnalysis()’</em></strong>. Again, this produces a list with two sub-list items. The first is the trend analysis results, and the second is a plot that shows you the trend analysis output in graphical form. The graph is shown below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>MCI_Trend_Analysis_Output<span class="ot">&lt;-</span><span class="fu">NonSeasonalTrendAnalysis</span>(MCI_Data,<span class="at">mymain=</span><span class="st">"Ex 1 Raw Trend"</span>,<span class="at">do.plot=</span>T)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>MCI_Trend_Analysis_Output[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ol start="7" type="1">
+<li><strong>Classify the output.</strong></li>
+</ol>
+<p>We can see that the trend is decreasing over time, but does this mean that things are improving or degrading and what confidence do we have around this? The <strong><em>‘AssignConfCat()’</em></strong> function can classify the trend output in a number of different ways, ranging from full IPCC categories to simplified LAWA categories. We are more familiar with the latter so we will use the simple method.</p>
+<p>Trend direction means different things to different analytes. For example, an incresing trend for nitrate might be a bad thing, but an increasing trend for clarity might be a good thing. Therefore we need to tell this function what analyte we just analysed, and what analytes should be interpreted in reverse. The default reverse analytes for this function are ‘MCI’ and ‘CLAR’, which means that we just need to tell the function that we are dealing with MCI. However, for clarity we will include ‘Reverse’ in the function arguments. Again, it is looking for the ‘analyte’ column, which has dropped off in the trend analysis process and needs to be recreated.</p>
+<p>We will use this function to create a new column called ‘Direction’ which will contain the trend analysis category.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>MCI_Trend_Analysis_Output <span class="ot">&lt;-</span> MCI_Trend_Analysis_Output[[<span class="dv">1</span>]]</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>MCI_Trend_Analysis_Output<span class="sc">$</span>analyte <span class="ot">&lt;-</span> <span class="st">"MCI"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>MCI_Trend_Analysis_Output <span class="ot">&lt;-</span>MCI_Trend_Analysis_Output <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Direction =</span> <span class="fu">AssignConfCat</span>(MCI_Trend_Analysis_Output,<span class="at">CatType=</span><span class="st">"Improve"</span>,<span class="at">Reverse=</span><span class="fu">c</span>(<span class="st">"VC"</span>,<span class="st">"MCI"</span>)))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>MCI_Trend_Analysis_Output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  nObs nTimeIncr   S VarS   D        tau         Z          p         C
+1   18        18 -83  697 153 -0.5424837 -3.105971 0.00189655 0.9990517
+         Cd prop.censored prop.unique no.censorlevels TimeIncr    SeasIncr
+1 0.9990517             0           1               0   Annual NonSeasonal
+    Median AnnualSenSlope   Sen_Lci    Sen_Uci AnalysisNote
+1 108.7808      -1.266876 -1.938812 -0.6352487           ok
+  Percent.annual.change TrendDirection analyte             Direction
+1             -1.164614     Decreasing     MCI Very likely degrading</code></pre>
+</div>
+</div>
+<p>Look in the last column and we can see that the trend is ‘Very likely degrading’.</p>
+<p>Congratulations, you have just completed your first trend analysis using the LWPTrends package. Now for something a bit more challenging.</p>
+</section>
+<section id="river-water-quality-data" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="river-water-quality-data"><span class="header-section-number">3</span> River Water Quality Data</h2>
+<p>The next dataset contains four analytes (TN, NNN, TP, and DRP) collected from two sites (Rangitaiki at SH5 and Rangitaiki at Te Teko) on the Rangitaiki River.</p>
+<hr>
+<p><strong><em>Challenge 3:</em></strong> <em>Load the ‘DF_for_Trends.csv’ dataset and ensure that the Time column is formatted as a timestamp. </em></p>
+<details>
+<summary style="display: inline-block;">
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>WQ_Data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/DF_for_Trends.csv"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>WQ_Data <span class="ot">&lt;-</span> WQ_Data <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time =</span> <span class="fu">parse_date_time</span>(Time, <span class="at">orders =</span> <span class="fu">c</span>(<span class="st">"%Y-%m-%d %H:%M:%S"</span>,<span class="st">"%Y-%m-%d"</span>),<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<p>Let’s view the data so we can see what we are dealing with.</p>
+<hr>
+<p><strong><em>Challenge 4:</em></strong> <em>Create a ggplot where x=Time and y=Value and facet this by ‘LocationName + analyte’ so we can look at all variables. You can also add ‘colour=analyte’ for geom_point if you wish.</em></p>
+<details>
+<summary style="display: inline-block;">
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>WQ_Data <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour=</span>analyte))<span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>LocationName<span class="sc">+</span>analyte,<span class="at">scales=</span><span class="st">"free"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</details>
+<hr>
+<p>We can also look at which points have associated discharge measurements and if discharge seems to be increasing over time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>WQ_Data <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour=</span>Discharge))<span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>LocationName<span class="sc">+</span>analyte,<span class="at">scales=</span><span class="st">"free"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We might also decide that we want to remove outliers. Outliers are difficuly to remove manually, but fortunately there is a package called ‘outliers’ that can help. The function of interest within the outliers package is called ‘scores()’ but this requires a fair bit of data manipulation to adapt to our datasets.</p>
+<p>But don’t fret, I have developed a function called <strong><em>‘Outliers_Z_Score()’</em></strong> which does all the hard work for you. All you need to do is input your dataframe in the form of “LocationName”, “Site”, “Time”, “analyte”, “Value”, and set the probability that you are happy with. I called this function ‘Outliers_Z_Score’ but you actually use other methods as well, just set the ‘type’ input to one of the following: (“z”, “t”, “chisq”, “mad”). This function can either return a dataframe of ‘outliers’ or a dataframe of non-outlier, i.e., ‘values’.</p>
+<p>We will use a probability of 0.99 and use a z score to define outliers in our dataset. We can then compare this to our original dataset and create a new variable that defines which values are outliers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#run the outliers function.  This creates a dataset of outlier values</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>Value_Output <span class="ot">&lt;-</span> <span class="fu">Outliers_Z_Score</span>(<span class="at">dataset=</span>WQ_Data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"LocationName"</span>, <span class="st">"Site"</span>, <span class="st">"Time"</span>,  <span class="st">"analyte"</span>, <span class="st">"Value"</span>),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">probability =</span> <span class="fl">0.99</span>,<span class="at">output =</span> <span class="st">"outliers"</span>,<span class="at">type=</span><span class="st">"z"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co">#create a unique column so we can compare this to our original dataset.</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>Value_Output <span class="ot">&lt;-</span>Value_Output <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Unique =</span> <span class="fu">paste0</span>(Site,Time,Parameter))</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#create a variable in the original dataset so we can identifiy our outliers.</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>WQ_Data <span class="ot">&lt;-</span> WQ_Data <span class="sc">%&gt;%</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Unique =</span> <span class="fu">paste0</span>(Site,Time,analyte)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Outlier =</span> <span class="fu">ifelse</span>(Unique <span class="sc">%in%</span> Value_Output<span class="sc">$</span>Unique, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Site, LocationName,Time,analyte,Value,Discharge,Outlier)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">#create a plot so we can visualise our outliers.</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>WQ_Data<span class="sc">%&gt;%</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour=</span>Outlier))<span class="sc">+</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>LocationName<span class="sc">+</span>analyte,<span class="at">scales=</span><span class="st">"free"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The blue dots in the figure above show which points have been identified as an outlier.</p>
+<hr>
+<p><strong><em>Challenge 5:</em></strong> <em>Try other outlier detection methods by changing the ‘type’ argument. When you’re happy, use filter() to remove these outliers from the dataset. Make sure you re-define the output as WQ_Data</em></p>
+<details>
+<summary style="display: inline-block;">
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#run the outliers function.  This creates a dataset of outlier values</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>Value_Output <span class="ot">&lt;-</span> <span class="fu">Outliers_Z_Score</span>(<span class="at">dataset=</span>WQ_Data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"LocationName"</span>, <span class="st">"Site"</span>, <span class="st">"Time"</span>,  <span class="st">"analyte"</span>, <span class="st">"Value"</span>),</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">probability =</span> <span class="fl">0.99</span>,<span class="at">output =</span> <span class="st">"outliers"</span>,<span class="at">type=</span><span class="st">"chi"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#create a unique column so we can compare this to our original dataset.</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>Value_Output <span class="ot">&lt;-</span>Value_Output <span class="sc">%&gt;%</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Unique =</span> <span class="fu">paste0</span>(Site,Time,Parameter))</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#create a variable in the original dataset so we can identifiy our outliers.</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>WQ_Data <span class="ot">&lt;-</span> WQ_Data <span class="sc">%&gt;%</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Unique =</span> <span class="fu">paste0</span>(Site,Time,analyte)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Outlier =</span> <span class="fu">ifelse</span>(Unique <span class="sc">%in%</span> Value_Output<span class="sc">$</span>Unique, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Site, LocationName,Time,analyte,Value,Discharge,Outlier)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#create a plot so we can visualise our outliers.</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>WQ_Data<span class="sc">%&gt;%</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time, <span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour=</span>Outlier))<span class="sc">+</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>LocationName<span class="sc">+</span>analyte,<span class="at">scales=</span><span class="st">"free"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>WQ_Data <span class="ot">&lt;-</span> WQ_Data <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Outlier <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Site, LocationName,Time,analyte,Value,Discharge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<p>Okay, good job. To make things a bit simpler for the next part we will only look at one site and one variable. We will come back to look at the other sites and variable in part 2 of this lesson when we learn how to batch process trends.</p>
+<p>Let’s work with NNN at Rangitaiki at Te Teko.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>NNN_Te_Teko <span class="ot">&lt;-</span> WQ_Data <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(LocationName <span class="sc">==</span> <span class="st">"Rangitaiki at Te Teko"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(analyte <span class="sc">==</span> <span class="st">"NNN (g/m^3)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can begin the same process as before:</p>
+<p><br>
+</p>
+<ol type="1">
+<li><p><strong>Append date information to the dataset.</strong></p></li>
+<li><p><strong>Process censored values.</strong></p></li>
+</ol>
+<hr>
+<p><strong><em>Challenge 6:</em></strong> <em>See if you can complete steps 1 and 2 for the NNN_Te_Teko dataset. Remember, the timestamp needs to be converted to a date with the name ‘myDate’</em></p>
+<details>
+<summary style="display: inline-block;">
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>NNN_Te_Teko <span class="ot">&lt;-</span> NNN_Te_Teko <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">myDate =</span> <span class="fu">as.Date</span>(Time,<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">GetMoreDateInfo</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">RemoveAlphaDetect</span>(<span class="at">ColToUse=</span><span class="st">"Value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<ol start="3" type="1">
+<li><strong>Inspect the data.</strong></li>
+</ol>
+<p>Okay, now lets inspect the data to see what we are dealing with.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>Inspect_Output_NNN_Te_Teko <span class="ot">&lt;-</span> <span class="fu">InspectTrendData</span>(NNN_Te_Teko, <span class="at">EndYear =</span> <span class="fu">max</span>(NNN_Te_Teko<span class="sc">$</span>Year),</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">ReturnALLincr=</span><span class="cn">TRUE</span>,<span class="at">do.plot =</span> <span class="cn">TRUE</span>,<span class="at">mymain=</span><span class="st">"Example 1"</span>,<span class="at">UseMidObs=</span><span class="cn">TRUE</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#note the same nested structure.</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(Inspect_Output_NNN_Te_Teko[[<span class="dv">3</span>]][[<span class="dv">1</span>]],</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>          <span class="fu">ggarrange</span>(Inspect_Output_NNN_Te_Teko[[<span class="dv">3</span>]][[<span class="dv">2</span>]],</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                    Inspect_Output_NNN_Te_Teko[[<span class="dv">3</span>]][[<span class="dv">3</span>]],</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>                    Inspect_Output_NNN_Te_Teko[[<span class="dv">3</span>]][[<span class="dv">4</span>]],<span class="at">nrow=</span><span class="dv">1</span>,<span class="at">align=</span><span class="st">"h"</span>),<span class="at">nrow=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Okay. We can see that we have a few gaps and a few duplicates but nothing too bad. LWPTrends handles duplicate values within each time increment by taking the value that is closest to the mid-point of that increment. You can also tell it to take the median if you want.</p>
+<p>If we look at the second sub-list item we can see that all time increments are satisfied. The output will allocate the time increment as the most frequent increment that satisfies all requirements, in this case ‘month’.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>Inspect_Output_NNN_Te_Teko[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Incr TrendPeriodL nobs nYear propYear nIncrYear propIncrYear propCen
+1   Month           37  826    37        1       420    0.9459459       0
+2 BiMonth           37  826    37        1       215    0.9684685       0
+3     Qtr           37  826    37        1       145    0.9797297       0
+4   BiAnn           37  826    37        1        73    0.9864865       0
+  nCenLevelsLT nCenLevelsGT nFlow DataOK
+1            0            0     0   TRUE
+2            0            0     0   TRUE
+3            0            0     0   TRUE
+4            0            0     0   TRUE</code></pre>
+</div>
+</div>
+<p>Let’s take the appended dataset created by the InspectTrendData function (sub-list item 1) and move to step 4.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>NNN_Te_Teko <span class="ot">&lt;-</span> Inspect_Output_NNN_Te_Teko[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><br>
+</p>
+<ol start="4" type="1">
+<li><strong>Check for seasonality.</strong></li>
+</ol>
+<p>Our time increment for NNN_Te_Teko is monthly so it’s highly likely there could be some seasonality in the data (i.e., some months could have higher concentrations than others due to climatic or anthropogenic factors). If the data are seasonal, we need to use a different trend analysis function than for non-seasonal data. But how do we determine if the data are seasonal? LWPTrends has a function for that called <strong><em>‘GetSeason()’</em></strong>. GetSeason performs a Kruskal Wallis (non-parametric) test on the observations using the time increment as the explainatory variable. Use of this function is simple, you just need to input the dataset and tell it which column to look at.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>Season_Output<span class="ot">&lt;-</span><span class="fu">GetSeason</span>(NNN_Te_Teko,<span class="at">ValuesToUse =</span> <span class="st">"RawValue"</span>,<span class="at">mymain=</span><span class="st">"Example 1"</span>,<span class="at">do.plot =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This function outputs another list object with three sub-list components: 1) an appended dataset, 2) the output from the Kruskal-Wallis test, and 3) a graph showing the output.</p>
+<hr>
+<p><strong><em>Challenge 7:</em></strong> <em>Look at sub-list components 2 and 3 and come to a conclusion of whether the data is seasonal or not.</em></p>
+<details>
+<summary style="display: inline-block;">
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>Season_Output[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           Observations   KWstat       pvalue SeasNote TimeIncr
+Kruskal-Wallis chi-squared          826 149.7574 1.670623e-26       ok  Monthly
+                            Season
+Kruskal-Wallis chi-squared Monthly</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#The Kruskal-Wallis test has a p value of 1.670623e-26 which means the data is highly seasonal.</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>Season_Output[[<span class="dv">3</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#This figure shows it nicely - it looks like nitrate concentrations peak over the winter months and are their lowest in summer. </span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#We need to run a seasonal trend analysis.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<ol start="5" type="1">
+<li><strong>Define a co-variate and test relationship.</strong></li>
+</ol>
+<p>Okay, we know the data is seasonal, but could this be caused by seasonality in a co-variate, e.g.&nbsp;river discharge or rainfall? This is where co-variate adjustment comes in handy. The LWPTrends package allows us to determine the relationship between our observations and a potential co-variate, and then adjust our final values based on the values of the co-variate. For example, the concentration of an analyte is often related to discharge in rivers as this usually means there has been rainfall and mobilisation of contaminants sourced from the land. If this was the case, then an trends we find in our data could actually be caused by changes in river discharge rather than increased losses or loading from within the catchment.</p>
+<p>With that being said, Snelder et al.&nbsp;(2021) <strong>do not recommend using flow adjusted trends for regional applications</strong> (i.e., assessing and reporting trends across many sites and variables in the context of regional state of environment reporting). They state that the purpose of flow-adjustment is to remove the confounding effect of flow so that the pattern of interest (the relationship between the observed water quality observations and time i.e., the trend) can be more confidently inferred. However, the definition of models describing observations of instantaneous flow is subjective and therefore there are unquantified uncertainties that arise due to procedural choices around flow adjustment that are likely to be made by individual analysts. Furthermore, there is evidence that trends are often associated with changes in the relationship between concentration and flow through the trend’s time period (Snelder and Kerr, 2022). However, flow adjustment (based on defining a relationship between observations and instantaneous flow) assumes that the concentration - flow relationship is constant through time. Violations of this assumption will affect the robustness of flow adjustment.</p>
+<p>So in short, it’s complicated and somewhat subjective as to whether you should actually adjust values by discharge or not. But for the sake of this lesson, we will continue with the adjustment process using river discharge as a co-variate. The function we will use is called <strong><em>‘AdjustValues()’</em></strong> and there is a long list of possible inputs that we can change. Luckily, most of these have default values so we don’t really need to worry about them. We do, however, need to provide the dataset (referred to a ‘x’ - NNN_Te_Teko), the column that contains the values (referred to as ‘ValuesToAdjust’ - RawValue), and the column that contains the covariate (referred to as ‘Covariate’ - Discharge).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#take the seasonally appended dataset</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>NNN_Te_Teko <span class="ot">&lt;-</span> Season_Output[[<span class="dv">1</span>]]</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>CV_Output<span class="ot">&lt;-</span><span class="fu">AdjustValues</span>(NNN_Te_Teko, <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"Gam"</span>, <span class="st">"LogLog"</span>, <span class="st">"LOESS"</span>), <span class="at">ValuesToAdjust =</span> <span class="st">"RawValue"</span>, <span class="at">Covariate =</span> <span class="st">"Discharge"</span>, <span class="at">Span =</span> <span class="fu">c</span>(<span class="fl">0.7</span>), <span class="at">do.plot =</span>T, <span class="at">plotpval=</span>T, <span class="at">mymain=</span><span class="st">"Example 1a"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>AdjustValues() produces yet another list object, but this time there are only two sub-list components: 1) a dataset of model performance (note that this is NOT an appended dataset), and 2) a plot of the different mondels.</p>
+<p>Let’s look at component 2 first.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>CV_Output[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that all models are technically significant (p&lt;0.05). However, some models look better than others. The LogLog (green) model doesn’t appear to represents this releationship as well as the Gam or LOESS models. The Gam and LOESS models are close, but the LOESS model seems to provide better representation at lower flows. We can also see the R2 values in the plot legend, which align with our visual assessment, i.e., Gam and LOESS have an R2 of 0.23, i.e., discharge explains 23% of the variance in NNN concentrations.</p>
+<p>We might decide that 23% is a significant amount, and that we need to address this. Let’s take the LOESS model, and we will also plot up the new dataset to see what our new flow adjusted points look like. As mentioned above, flow adjustment is not recommended for regional data, therefore LWP have not made the output from the AdjustValues function fit seamlessly into the next step. Therefore, we need to do some tidying up before we can move on. Let’s tidy up this output and plot the new adjusted values to see what the look like.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#take the output from the AdjustValues function. </span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>CV_Adjusted_Values <span class="ot">&lt;-</span> CV_Output[[<span class="dv">1</span>]]</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#we will use the cbind (column bind) function to append on the relevant column from the CV adjusted output. </span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>NNN_Te_Teko <span class="ot">&lt;-</span> NNN_Te_Teko <span class="sc">%&gt;%</span> </span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(CV_Adjusted_Values <span class="sc">%&gt;%</span> <span class="fu">select</span>(LOESS0<span class="fl">.7</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"Flow_Adjusted"</span> <span class="ot">=</span> <span class="st">"LOESS0.7"</span>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co">#create a time-series plot of the flow adjusted results.</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>P_FA <span class="ot">&lt;-</span> NNN_Te_Teko <span class="sc">%&gt;%</span> </span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Flow_Adjusted))<span class="sc">+</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a><span class="co">#create a time-series plot of the raw results.</span></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>P_RD <span class="ot">&lt;-</span> NNN_Te_Teko <span class="sc">%&gt;%</span> </span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>RawValue))<span class="sc">+</span></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a><span class="co">#create a time-series plot of the discharge.</span></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>P_DC <span class="ot">&lt;-</span> NNN_Te_Teko <span class="sc">%&gt;%</span> </span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Discharge),<span class="at">colour=</span><span class="st">"midnightblue"</span>)<span class="sc">+</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a><span class="co">#combine them together in a ggarrange figure. </span></span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(P_RD,P_FA,P_DC,<span class="at">nrow=</span><span class="dv">3</span>, <span class="at">align =</span> <span class="st">"h"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Hmm..I will leave you to come to your own conclusion, but you can see why Snelder et al.&nbsp;(2021) think flow adjustment can be subjective.</p>
+<p>Regardless, let’s take the flow adjusted values through to the final two steps.</p>
+<p><br>
+</p>
+<ol start="6" type="1">
+<li><strong>Run trend analysis.</strong></li>
+</ol>
+<p>We know from step 4 that we need to run a seasonal trend analysis. The function for this is called <strong><em>‘SeasonalTrendAnalysis()’</em></strong> and we need to tell it to use our ‘Flow_Adjusted’ column, but keep the ‘RawValue’ column for descriptive statistics. You can do this using the code below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko <span class="ot">&lt;-</span><span class="fu">SeasonalTrendAnalysis</span>(NNN_Te_Teko, <span class="at">ValuesToUse=</span><span class="st">"Flow_Adjusted"</span>, <span class="at">RawValues=</span><span class="cn">FALSE</span>, <span class="at">ValuesToUseforMedian=</span><span class="st">"RawValue"</span>, <span class="at">mymain=</span><span class="st">"Example 1a: Flow Adjusted Trend"</span>, <span class="at">do.plot=</span>T)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><br>
+</p>
+<ol start="7" type="1">
+<li><strong>Classify the output.</strong></li>
+</ol>
+<p>Now we can classify the output in the same way as before (using ‘AssignConfCat’).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko <span class="ot">&lt;-</span> Trend_Analysis_Output_NNN_Te_Teko[[<span class="dv">1</span>]]</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko <span class="ot">&lt;-</span> Trend_Analysis_Output_NNN_Te_Teko <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">analyte =</span> <span class="st">"NNN"</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko<span class="sc">$</span>Direction <span class="ot">&lt;-</span> <span class="fu">AssignConfCat</span>(Trend_Analysis_Output_NNN_Te_Teko,<span class="at">CatType=</span><span class="st">"Improve"</span>,<span class="at">Reverse=</span><span class="fu">c</span>(<span class="st">"VC"</span>))</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  nObs nTimeIncr    S  VarS    D         tau         Z        p         C
+1  800       412 -290 57074 6910 -0.04196816 -1.209703 0.226393 0.8868035
+         Cd prop.censored prop.unique no.censorlevels TimeIncr SeasIncr Median
+1 0.8868035             0         0.5               0  Monthly  Monthly 0.3735
+  AnnualSenSlope      Sen_Lci      Sen_Uci AnalysisNote Percent.annual.change
+1  -0.0004142955 -0.001240764 2.973935e-05           ok            -0.1109225
+  TrendDirection analyte        Direction
+1     Decreasing     NNN Likely improving</code></pre>
+</div>
+</div>
+<p>Whew. We finally have a result. You can see that NNN is ‘Likely improving’ between 1990 and 2025. Interesting, this is very different to the obvious visual trend in the raw data.</p>
+<hr>
+<p><strong><em>Challenge 8:</em></strong> <em>What would the result be if we took our un-adjusted values instead of our flow-adjusted values? Which version do you think is more appropriate?</em></p>
+<details>
+<summary style="display: inline-block;">
+<b>Click to see a solution</b>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko_Raw <span class="ot">&lt;-</span><span class="fu">SeasonalTrendAnalysis</span>(NNN_Te_Teko, <span class="at">ValuesToUse=</span><span class="st">"RawValue"</span>, <span class="at">ValuesToUseforMedian=</span><span class="st">"RawValue"</span>, <span class="at">mymain=</span><span class="st">"Example 1a: Flow Adjusted Trend"</span>, <span class="at">do.plot=</span>T)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko_Raw[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_6_2025_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko_Raw <span class="ot">&lt;-</span> Trend_Analysis_Output_NNN_Te_Teko_Raw[[<span class="dv">1</span>]]</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko_Raw <span class="ot">&lt;-</span> Trend_Analysis_Output_NNN_Te_Teko_Raw <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">analyte =</span> <span class="st">"NNN"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko_Raw<span class="sc">$</span>Direction <span class="ot">&lt;-</span> <span class="fu">AssignConfCat</span>(Trend_Analysis_Output_NNN_Te_Teko_Raw,<span class="at">CatType=</span><span class="st">"Improve"</span>,<span class="at">Reverse=</span><span class="fu">c</span>(<span class="st">"VC"</span>))</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>Trend_Analysis_Output_NNN_Te_Teko_Raw</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  nObs nTimeIncr    S     VarS    D       tau        Z            p C
+1  826       420 2712 59795.33 7154 0.3790886 11.08654 1.458258e-28 1
+            Cd prop.censored prop.unique no.censorlevels TimeIncr SeasIncr
+1 7.291291e-29             0   0.3474576               0  Monthly  Monthly
+  Median AnnualSenSlope     Sen_Lci     Sen_Uci AnalysisNote
+1 0.3755    0.005538401 0.004753135 0.006391111           ok
+  Percent.annual.change TrendDirection analyte             Direction
+1               1.47494     Increasing     NNN Very likely degrading</code></pre>
+</div>
+</div>
+<p>The un-adjusted trend would be ‘Very likely degrading’.</p>
+</details>
+<hr>
+<p>Well, that’s it for this lesson but we have only covered half of the trend analysis content. I will try to develop a follow up lesson where we use the rest of the WQ_Data dataset to look at batch processing.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

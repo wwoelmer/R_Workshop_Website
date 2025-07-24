@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="James Dare">
+
+<title>BOPRC R Tutorial 4 - Manipulating and plotting time series data: Part 2 (high frequency data) – Introduction to R Workshop Series</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-df479d6c4d77d0e0dfbcb5361179d7fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Introduction to R Workshop Series</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_1_2025.html"> 
+<span class="menu-text">Lesson 1</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_2_2025.html"> 
+<span class="menu-text">Lesson 2</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_3_2025.html"> 
+<span class="menu-text">Lesson 3</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../workshops/R_Tutorial_4_2025.html" aria-current="page"> 
+<span class="menu-text">Lesson 4</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_5_2025.html"> 
+<span class="menu-text">Lesson 5</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../workshops/R_Tutorial_6_2025.html"> 
+<span class="menu-text">Lesson 6</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
+  <li><a href="#data-gaps" id="toc-data-gaps" class="nav-link" data-scroll-target="#data-gaps"><span class="header-section-number">2</span> Data gaps</a></li>
+  <li><a href="#interpolation" id="toc-interpolation" class="nav-link" data-scroll-target="#interpolation"><span class="header-section-number">3</span> Interpolation</a></li>
+  <li><a href="#thickening" id="toc-thickening" class="nav-link" data-scroll-target="#thickening"><span class="header-section-number">4</span> Thickening</a></li>
+  <li><a href="#introducing-other-datasets" id="toc-introducing-other-datasets" class="nav-link" data-scroll-target="#introducing-other-datasets"><span class="header-section-number">5</span> Introducing other datasets</a></li>
+  <li><a href="#merging-data" id="toc-merging-data" class="nav-link" data-scroll-target="#merging-data"><span class="header-section-number">6</span> Merging Data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">BOPRC R Tutorial 4 - Manipulating and plotting time series data: Part 2 (high frequency data)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>James Dare </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
+<p>This lesson is designed to provide you with experience in manipulating and plotting time series data.</p>
+<p>The main packages that we will use in this tutorial are:</p>
+<ul>
+<li><strong>tidyverse</strong></li>
+<li><strong>padr</strong></li>
+<li><strong>zoo</strong></li>
+<li><strong>ggpubr</strong></li>
+</ul>
+<p>Before attempting to install these packages, make sure your Primary CRAN Repository is set to:</p>
+<ul>
+<li><strong>“New Zealand [https] - University of Auckland”</strong></li>
+</ul>
+<p>To check this, click ‘Tools’ –&gt; ‘Global Options’ –&gt; ‘Packages’. Click ‘Change’ if you need to adjust this.</p>
+<p>You can download most packages by clicking on the ‘Install’ button on the ‘packages’ tab in the lower right window pane. Then in the Install Packages popup, select ‘Repository (CRAN)’ from the ‘Install from’ drop box and type the name of the package you wish to download (e.g., dplyr).</p>
+<p>Once all of these packages are installed you can load them using the ‘library’ function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(padr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Today we will be exploring high frequency data collected at the Rangitaiki at SH5 site, over the period of the 2023 Auckland Anniversary and Cyclone Gabrielle storm events. High frequency data can be extracted from the Aquarius database using the ‘getdata’ function, but to make things easier, these datasets have been pre-extracted and saved as a csv.</p>
+<p>Let’s load the discharge dataset to see what we are working with.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/Rangitaiki_Discharge.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>It’s good practice to inspect a dataset after importing it. You can use the ‘str’ function, but the ‘summary’ function provides more information.</p>
+<hr>
+<p><strong><em>Challenge 1:</em></strong> <em>Use the ‘summary’ funtion to inspect Discharge_DF. What do you notice about the dataset? Can we plot Value vs.&nbsp;Time in it’s current state?</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Discharge_DF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Site           LocationName           Time               Value       
+ Length:11521       Length:11521       Length:11521       Min.   : 4.202  
+ Class :character   Class :character   Class :character   1st Qu.: 5.219  
+ Mode  :character   Mode  :character   Mode  :character   Median : 5.745  
+                                                          Mean   : 6.076  
+                                                          3rd Qu.: 6.699  
+                                                          Max.   :12.776  
+    Quality      Approval         Qualifiers      Parameter        
+ Min.   :600   Length:11521       Mode:logical   Length:11521      
+ 1st Qu.:600   Class :character   NA's:11521     Class :character  
+ Median :600   Mode  :character                  Mode  :character  
+ Mean   :600                                                       
+ 3rd Qu.:600                                                       
+ Max.   :600                                                       
+     Unit          
+ Length:11521      
+ Class :character  
+ Mode  :character  
+                   
+                   
+                   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We can see that 'Time' has been imported as a character.  We will need to</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># change this to a timestamp before attempting to plot the data, otherwise R</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># will treat 'Time' as a discrete value rather than a continuous timescale.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<p>Let’s convert ‘Time’ to a proper timestamp. To do this, we need to tell R where to find important information (i.e., the year, month, day, hour, second). Take a look at the time column in ‘Discharge_DF’. See that the format is generally ‘DAY/MONTH/YEAR HOUR:MINUTE’. We would write this in R as “%d/%m/%Y %H:%M”.</p>
+<p>There are a few exceptions - notice that midnight values have been reduced to ‘DAY/MONTH/YEAR’ (i.e., “%d/%m/%Y”) - this is Excel’s way of ‘helping’ us, because why would we need to state HOURS and MINUTES if they both equal zero? Luckily there is a function called ‘parse_date_time’ that allows us to provide a backup format to revert to if the initial format doesn’t quite fit. Don’t forget to specify the tz=“etc/GMT+12” as we will be using multiple datasets and want to ensure the times are comparable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF <span class="ot">&lt;-</span> Discharge_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time =</span> <span class="fu">parse_date_time</span>(Time,<span class="at">orders =</span> <span class="fu">c</span>(<span class="st">"%d/%m/%Y %H:%M"</span>,<span class="st">"%d/%m/%Y"</span>),<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#the order of format preference is determined by the order in the list provided to "orders".</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Great! Notice that all timestamps are now in the format “YEAR-MONTH-DAY HOUR:MINUTE:SECONDS” (or “%Y-%m-%d %H:%M:%S”). This is R’s default way of storing timestamps, which aligns with the ISO 8601 standard for time and date representation. If your timestamps are NOT in this format then they are not recognised by R as a timestamp. Also be wary that just because your timestamps are in this format, doesn’t mean that R has recognised them as timestamps - they could have been imported as a ‘character’. It always pays to check.</p>
+<p>Clear as mud? Right, let’s move on.</p>
+<p>We can now plot the data to see what we are dealing with.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>()<span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>)<span class="sc">+</span> <span class="co">#%b represents the month as a short word</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="co">#we know the x axis represents time.  I don't feel the need to show it.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This figure shows the discharge at ‘Rangitaiki at SH5’ between January 20th and March 1st 2023. The first discharge peak was caused by the Auckland Anniversary storm, the second was caused by Cyclone Gabrielle.</p>
+<p>Notice that the y-axis is not labelled correctly. It should say something like “Discharge (m^3/s)”.</p>
+<hr>
+<p><strong><em>Challenge 2:</em></strong> <em>Change the y axis label on this plot to ‘Discharge (m^3/s)’. Hint - ylab() changes the label on the y axis in ggplot. Bonus points if you can get R to recognise ^3 as a superscript.</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>()<span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>)<span class="sc">+</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Discharge ("</span>, m<span class="sc">^</span><span class="dv">3</span>, <span class="st">"/s)"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#ylab('Discharge (m^3/s)') is also acceptable.  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<p>Let’s say we wanted to quickly work out the peak values from these separate events. One (very rough) method could be to split the dataset in two - values before the 8th of Feb are attributed to the Auckland Anniversary event, and those after are attributed to Cyclone Gabrielle.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Event =</span> <span class="fu">ifelse</span>(Time <span class="sc">&lt;=</span> <span class="fu">as.POSIXct</span>(<span class="st">"2023-02-08"</span>),<span class="st">"Auckland"</span>,<span class="st">"Gabrielle"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Event) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Max_Disc =</span> <span class="fu">max</span>(Value,<span class="at">na.rm=</span>T))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  Event     Max_Disc
+  &lt;chr&gt;        &lt;dbl&gt;
+1 Auckland     12.8 
+2 Gabrielle     7.58</code></pre>
+</div>
+</div>
+<p>We can see that the Auckland Anniversary event peaks at 12.8 m^3/s and the Cyclone Gabrielle event peaks at 7.58 m^3/s. For context, the maximum flow recorded at this site over the past 10 years is 14.01 m^3/s. We could extract the entire discharge record from this site to work out the flow percentile, or you could just trust me that the Auckland event is in the top 1% of flows recorded at this site, and the Gabrielle event is in the top 2%.</p>
+</section>
+<section id="data-gaps" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="data-gaps"><span class="header-section-number">2</span> Data gaps</h2>
+<p>Continuous data is always subject to data gaps, e.g., a sensor might fail and need to be fixed, or it could become fouled with algae and start producing unusable data.</p>
+<p>Let’s assume the discharge data between “2023-02-05” and “2023-02-12” is unusable and has been removed from the dataset. The code below removes this section from our dataset. Note the use of the ‘|’ operator which means ‘OR’ in R language, i.e., Time is less than “2023-02-05” OR greater than “2023-02-12”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF_Gaps <span class="ot">&lt;-</span> Discharge_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Time <span class="sc">&lt;</span> <span class="fu">as.POSIXct</span>(<span class="st">"2023-02-01"</span>,<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>)<span class="sc">|</span>Time <span class="sc">&gt;=</span> <span class="fu">as.POSIXct</span>(<span class="st">"2023-02-12"</span>,<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can plot this in the same way as above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>()<span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>)<span class="sc">+</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Discharge ("</span>, m<span class="sc">^</span><span class="dv">3</span>, <span class="st">"/s)"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice that there is no gap in the figure. This is because the dataset continues from the 4th Feb to 13th Feb with no gaps to represent the missing data. Therefore, ggplot assumes that the 4th Feb is connected to the 13th Feb and directly connects the two points with a straight line. This is common when extracting continuous data from our aquarius database as the extraction process does not include gaps. Obviously this is not representative of the actual timeseries dataset, and can be misleading to people interpreting the plot.</p>
+<p>Fortunately, there is a very handy package called ‘padr’. This package is made for timeseries data and will interpret the frequency of your data and ‘pad’ your dataset (insert gaps) where there is missing data. See what happens when we introduce the <em>‘pad()’</em> function to our tidyverse pipeline.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Discharge_DF_Gaps <span class="ot">&lt;-</span> Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pad</span>()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>()<span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>)<span class="sc">+</span> </span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Discharge ("</span>, m<span class="sc">^</span><span class="dv">3</span>, <span class="st">"/s)"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Padr has automatically detected a 5 minute interval, and ‘padded’ our dataset, ensuring there is a row for every timestep. This is much more representative of our dataset.</p>
+</section>
+<section id="interpolation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="interpolation"><span class="header-section-number">3</span> Interpolation</h2>
+<p>It may be appropriate to interpolate over gaps in certain instances. There are a couple of useful functions in the ‘zoo’ package that can help with this - <em>‘na.approx()’</em> and <em>‘na.spline()’</em>. Both methods use pre and post gap information to estimate values across the gap. The first method <em>‘na.approx()’</em> uses a linear interpolation method, while <em>‘na.spline()’</em> uses a polynomial method. You can see what these look like below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create new columns that interpolate na values using either method.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>Discharge_DF_Gaps <span class="ot">&lt;-</span> Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value_Spline =</span> <span class="fu">na.spline</span>(Value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Value_Linear =</span> <span class="fu">na.approx</span>(Value))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> Value_Spline, <span class="at">color =</span> <span class="st">"Spline"</span>)) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> Value_Linear, <span class="at">color =</span> <span class="st">"Linear"</span>)) <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> Value, <span class="at">color =</span> <span class="st">"Original"</span>)) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">name =</span> <span class="st">"Legend"</span>, </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Spline"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Linear"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Original"</span> <span class="ot">=</span> <span class="st">"black"</span>)) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It looks like the spline method interpolates our data better in this case as the linear method is not realistic. Note that neither method is perfect - we lose the small bumps that are observed in the untouched record as they can’t be estimated from remnant data.</p>
+<p>We will use the spline record from this point onwards.</p>
+</section>
+<section id="thickening" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="thickening"><span class="header-section-number">4</span> Thickening</h2>
+<p>Another great function in the ‘padr’ package is <em>‘thicken()’</em>. This will create an additional column with timestamps at a reduced frequency. For example, you might thicken a 5 minute dataframe to an hourly dataframe, or even daily dataframe. You can plug this into the tidyverse pipeline to summarise the dataset at the new frequency.</p>
+<p>Let’s thicken our new spline interpolated dataset to hourly and daily intervals.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#this is the dataset thickened to hourly intervals</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>Hourly_Disc <span class="ot">&lt;-</span> Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Site, LocationName, Time, Value_Spline) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">thicken</span>(<span class="at">by =</span> <span class="st">'Time'</span>, <span class="at">interval =</span> <span class="st">'hour'</span>,<span class="at">colname =</span> <span class="st">'Hour_Stamp'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Hour_Stamp) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Value =</span> <span class="fu">mean</span>(Value_Spline,<span class="at">na.rm=</span>T)) </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Hourly_Disc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Hour_Stamp          Value
+  &lt;dttm&gt;              &lt;dbl&gt;
+1 2023-01-20 00:00:00  4.53
+2 2023-01-20 01:00:00  4.53
+3 2023-01-20 02:00:00  4.53
+4 2023-01-20 03:00:00  4.53
+5 2023-01-20 04:00:00  4.53
+6 2023-01-20 05:00:00  4.53</code></pre>
+</div>
+</div>
+<hr>
+<p><strong><em>Challenge 3:</em></strong> <em>Thicken and summarise the ‘Discharge_DF_Gaps’ dataset to a daily timestamp. Assign this new dataset the name ‘Daily_Disc’</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#this is the dataset thickened to daily intervals</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>Daily_Disc <span class="ot">&lt;-</span> Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Site, LocationName, Time, Value_Spline) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">thicken</span>(<span class="at">by =</span> <span class="st">'Time'</span>, <span class="at">interval =</span> <span class="st">'day'</span>, <span class="at">colname =</span> <span class="st">'Day_Stamp'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Day_Stamp) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Value =</span> <span class="fu">mean</span>(Value_Spline,<span class="at">na.rm=</span>T))</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Daily_Disc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Day_Stamp  Value
+  &lt;date&gt;     &lt;dbl&gt;
+1 2023-01-20  4.51
+2 2023-01-21  4.45
+3 2023-01-22  4.40
+4 2023-01-23  4.35
+5 2023-01-24  4.31
+6 2023-01-25  4.28</code></pre>
+</div>
+</div>
+</details>
+<hr>
+<p>Notice that the ‘Day_Stamp’ is of the class ‘date’. This will make it difficult to compare to the ‘Hour_Stamp’ which is in the class ‘S3:POSIXct’. We will adress this further down.</p>
+<p>Let’s plot the hourly record. However, this time we will save the plot as a png file using <em>‘ggsave()’</em>. Note that We need to assign the plot to an object (Hourly_Disc_Plot) to do this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">#this is a plot object of hourly discharge</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>Hourly_Disc_Plot <span class="ot">&lt;-</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  Hourly_Disc <span class="sc">%&gt;%</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x=</span>Hour_Stamp,<span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Discharge ("</span>, m<span class="sc">^</span><span class="dv">3</span>, <span class="st">"/s)"</span>)))<span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Hourly Average"</span>)<span class="sc">+</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, </span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.POSIXct</span>(<span class="st">"2023-01-20"</span>), <span class="fu">as.POSIXct</span>(<span class="st">"2023-03-01"</span>)))</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot =</span> Hourly_Disc_Plot,<span class="at">filename =</span> <span class="st">"Hourly_Disc.png"</span>,<span class="at">dpi=</span><span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 25 rows containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+</div>
+<p>You should now have a file in your project folder called ‘Hourly_Disc.png’.</p>
+<hr>
+<p><strong><em>Challenge 4:</em></strong> <em>Create a figure for the daily discharge object you created above and save it as ‘Daily_Disc.png’.</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>Daily_Disc_Plot <span class="ot">&lt;-</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  Daily_Disc <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Day_Stamp =</span> <span class="fu">as.POSIXct</span>(Day_Stamp, <span class="at">tz=</span><span class="st">"etc/GMT+12"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x=</span>Day_Stamp,<span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Discharge ("</span>, m<span class="sc">^</span><span class="dv">3</span>, <span class="st">"/s)"</span>)))<span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Daily Average"</span>)<span class="sc">+</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, </span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.POSIXct</span>(<span class="st">"2023-01-20"</span>), <span class="fu">as.POSIXct</span>(<span class="st">"2023-03-01"</span>)))</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot =</span> Daily_Disc_Plot,<span class="at">filename =</span> <span class="st">"Daily_Disc.png"</span>,<span class="at">dpi=</span><span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+</div>
+</details>
+<hr>
+<p>These figures are useful, but it would be better if they were arranged in one figure so we could directly compare them. This is where the package ‘ggpubr’ comes in handy. This package has a function called <em>‘ggarrange()’</em> which allows you to arrange discrete plot objects in a combined format - particularly useful for publications. We will add in the original 5min dataframe so we gain a good understanding of how thicken affects our data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#create a plot for </span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>Original_Plot <span class="ot">&lt;-</span> Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Value_Spline))<span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Discharge ("</span>, m<span class="sc">^</span><span class="dv">3</span>, <span class="st">"/s)"</span>)))<span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Original 5min Data"</span>)<span class="sc">+</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>,</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.POSIXct</span>(<span class="st">"2023-01-20"</span>), <span class="fu">as.POSIXct</span>(<span class="st">"2023-03-01"</span>)))</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>Combined_Plot <span class="ot">&lt;-</span> <span class="fu">ggarrange</span>(Original_Plot,Hourly_Disc_Plot, Daily_Disc_Plot, <span class="at">nrow=</span><span class="dv">3</span>, <span class="at">align=</span><span class="st">"v"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 300 rows containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 25 rows containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+</div>
+<hr>
+<p><strong><em>Challenge 5:</em></strong> <em>Save the combined ggarrange plot as a png with a dpi=300, height=6, and width = 8.</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot =</span> Combined_Plot,<span class="at">filename =</span> <span class="st">"Disc_Comparison_Plot.png"</span>,<span class="at">dpi=</span><span class="dv">300</span>,<span class="at">height=</span><span class="dv">6</span>,<span class="at">width=</span><span class="dv">8</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Units are in inches as a default, but you can change them by specifying the units as either "in", "cm", "mm", "px". </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+</section>
+<section id="introducing-other-datasets" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="introducing-other-datasets"><span class="header-section-number">5</span> Introducing other datasets</h2>
+<p>We can also access other datasets that might provide more context for our discharge data. The most obvious is rainfall data. The nearest rainfall site to ‘Rangitaiki at SH5’ is a site called ‘Te Whaiti at Minginui’.</p>
+<p>Rainfall data can be imported in the same way as discharge data. We also need to convert the time column to a timestamp.</p>
+<hr>
+<p><strong><em>Challenge 6:</em></strong> <em>Import the ‘TeWhaiti_Minginui_Rainfall.csv’ file located within the data folder. Once you have imported it, convert the Time column to a proper timestamp using ‘parse_date_time’.</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Rainfall_DF <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/TeWhaiti_Minginui_Rainfall.csv"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>Rainfall_DF <span class="ot">&lt;-</span> Rainfall_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time =</span> <span class="fu">parse_date_time</span>(Time,<span class="at">orders =</span> <span class="fu">c</span>(<span class="st">"%d/%m/%Y %H:%M"</span>,<span class="st">"%d/%m/%Y"</span>),<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+<p>Take a look at the rainfall dataset. Notice that rainfall data seems to be recorded in on an hourly basis OR when the tipping bucket mechanism triggers (i,e., there is enough liquid in the bucket to cause it to tip). The data is recorded in increments of 0.48mm (which I assume is equivalent to the volume of one bucket).</p>
+<p>This means that we are going to have to manipulate the dataset to gain any useful information. The obvious solution is to calculate the sum of rainfall that accumulates over a set period.</p>
+<p>We can easily do this using a combination of <em>‘thicken()’</em> and <em>‘summarise()’</em>.</p>
+<p>Let’s calculate and plot the total daily rainfall for this site. Note that thicken will create a column called ‘Time_day’ by default. This column will be in a date format because we are summarising per day.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>Rainfall_DF <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">thicken</span>(<span class="at">interval =</span> <span class="st">"day"</span>)  <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Time_day) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Daily_Rainfall =</span> <span class="fu">sum</span>(Value,<span class="at">na.rm=</span>T)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time_day =</span> <span class="fu">as.POSIXct</span>(Time_day,<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>,<span class="fu">aes</span>(<span class="at">x=</span>Time_day,<span class="at">y=</span>Daily_Rainfall),<span class="at">fill=</span><span class="st">"midnightblue"</span>)<span class="sc">+</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Daily Rainfall (mm)"</span>)<span class="sc">+</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="fu">as.POSIXct</span>(<span class="st">"2023-01-20"</span>,<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>),<span class="fu">as.POSIXct</span>(<span class="st">"2023-02-25"</span>,<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
+(`geom_bar()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Great, this seems to align with our previous discharge figures. However, it would be better if we could bring rainfall and discharge together and align their x axes. This type of figure is common in hydrology, and rainfall is often plotted as a second y axis with is reversed so that the bars come down from the top. However, R is really against using dual y axes. <a href="https://www.datawrapper.de/blog/dualaxis">See this article if you want to read about it</a>. You can force R to do this, but everything feels a bit ‘hacky’, i.e., you end up forcing ggplot to do things it doesn’t want to do.</p>
+<p>We will abide by R’s plotting rules and use <em>‘ggarrange()’</em> to create a similar figure that is more widely accepted by data enthusiasts.</p>
+<p>First we need to modify the rainfall figure so that the rainfall comes down from the top of the figure. We will also change the format of ‘Time_day’, which is currently a date class, to a POSIXct class, so that it aligns with the higher frequency discharge axis. Finally, we will remove the x labels because we don’t need them; everything will be aligned with the discharge axis.</p>
+<p>We will also recreate the discharge plot without a title.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>Rainfall_Plot <span class="ot">&lt;-</span> Rainfall_DF <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">thicken</span>(<span class="at">interval =</span> <span class="st">"day"</span>)  <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Time_day) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Daily_Rainfall =</span> <span class="fu">sum</span>(Value,<span class="at">na.rm=</span>T)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time_day =</span> <span class="fu">as.POSIXct</span>(Time_day,<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">"identity"</span>,<span class="fu">aes</span>(<span class="at">x=</span>Time_day,<span class="at">y=</span>Daily_Rainfall),<span class="at">fill=</span><span class="st">"midnightblue"</span>)<span class="sc">+</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_reverse</span>()<span class="sc">+</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>())<span class="sc">+</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Daily Rainfall (mm)"</span>)<span class="sc">+</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>,</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.POSIXct</span>(<span class="st">"2023-01-20"</span>), <span class="fu">as.POSIXct</span>(<span class="st">"2023-03-01"</span>)))</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>Discharge_Plot <span class="ot">&lt;-</span> Discharge_DF_Gaps <span class="sc">%&gt;%</span> </span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Value_Spline))<span class="sc">+</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Discharge ("</span>, m<span class="sc">^</span><span class="dv">3</span>, <span class="st">"/s)"</span>)))<span class="sc">+</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, </span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>,</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.POSIXct</span>(<span class="st">"2023-01-20"</span>), <span class="fu">as.POSIXct</span>(<span class="st">"2023-03-01"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can use ggarrange to position this above the discharge figure. We will add one more argument to this function, called ‘heights’. This specifies the relative heights of the two panels. In this case we will make the top panel 0.6 (60%) of the height of the bottom panel.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(Rainfall_Plot, Discharge_Plot,<span class="at">align=</span><span class="st">"v"</span>,<span class="at">nrow=</span><span class="dv">2</span>,<span class="at">heights =</span> <span class="fu">c</span>(<span class="fl">0.6</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_bar()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 300 rows containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+<p><strong><em>Challenge 7:</em></strong> <em>This site also has a continuous nitrate sensor (thanks Erin and the EIS team). The data record is also stored in the data folder. See if you can import this data and add it to the figure above. Once you have done that, save the entire combined figure as a png file with dpi=300, height=6, and width=8. I suggest adding Nitrate as the middle panel, which means that you will need to use ‘theme(axis.text.x=element_blank())’ to remove x axis labels.</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>Nitrate_DF <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/Rangitaiki_Nitrate.csv"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>Nitrate_DF <span class="ot">&lt;-</span> Nitrate_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time =</span> <span class="fu">parse_date_time</span>(Time,<span class="at">orders =</span> <span class="fu">c</span>(<span class="st">"%d/%m/%Y %H:%M"</span>,<span class="st">"%d/%m/%Y"</span>),<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>))</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>Nitrate_Plot <span class="ot">&lt;-</span> Nitrate_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()<span class="sc">+</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="fu">aes</span>(<span class="at">x=</span>Time,<span class="at">y=</span>Value))<span class="sc">+</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="cn">NULL</span>)<span class="sc">+</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Nitrate (mg/l)"</span>)<span class="sc">+</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>())<span class="sc">+</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_datetime</span>(<span class="at">date_breaks =</span> <span class="st">"10 days"</span>, </span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>                   <span class="at">date_labels =</span> <span class="st">"%b-%d"</span>,</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>                   <span class="at">limits =</span> <span class="fu">c</span>(<span class="fu">as.POSIXct</span>(<span class="st">"2023-01-20"</span>), <span class="fu">as.POSIXct</span>(<span class="st">"2023-03-01"</span>)))</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>Combined_Plot <span class="ot">&lt;-</span> <span class="fu">ggarrange</span>(Rainfall_Plot, Nitrate_Plot, Discharge_Plot,<span class="at">align=</span><span class="st">"v"</span>,<span class="at">nrow=</span><span class="dv">3</span>,<span class="at">heights =</span> <span class="fu">c</span>(<span class="fl">0.6</span>,<span class="dv">1</span>,<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_bar()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 99 rows containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 300 rows containing missing values or values outside the scale range
+(`geom_path()`).</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot =</span> Combined_Plot, <span class="at">filename =</span> <span class="st">"Combined_Rain_Nitrate_Disc.png"</span>,<span class="at">width=</span><span class="dv">8</span>,<span class="at">height=</span><span class="dv">6</span>,<span class="at">dpi=</span><span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+</section>
+<section id="merging-data" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="merging-data"><span class="header-section-number">6</span> Merging Data</h2>
+<p>In this final example we will see how our nitrate sensor compares against discrete NNN measurements from lab samples. Discrete lab samples are collected as part of a routine monthly run or via autosampler as part of a storm event sampling programme (thanks again Erin and EIS). These samples will not line up exactly with our high-resolution dataset, so we can’t just look up the nitrate reading at that time.</p>
+<p>Let’s read in the discrete lab samples and convert ‘Time’ to a proper timestamp.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>Lab_Samples <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/Rangitaiki_NNN.csv"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>Lab_Samples <span class="ot">&lt;-</span> Lab_Samples <span class="sc">%&gt;%</span> </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time =</span> <span class="fu">parse_date_time</span>(Time,<span class="at">orders =</span> <span class="fu">c</span>(<span class="st">"%d/%m/%Y %H:%M"</span>,<span class="st">"%d/%m/%Y"</span>),<span class="at">tz=</span><span class="st">"etc/GMT+12"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that the timestamps for this dataset are generally at an inconsistent frequency, where the timestamps for the continuous nitrate are every 15 minutes.</p>
+<p>The trick to merging these datasets is to develop a timestamp that matches both datasets, i.e., a unique variable that we can merge with.</p>
+<p>Let’s create a new column in the Lab_Samples dataframe where the timestamp is rounded to the nearest 15 minutes. We can use our friend <em>‘thicken()’</em> to do this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>Lab_Samples <span class="ot">&lt;-</span> Lab_Samples <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">thicken</span>(<span class="at">interval =</span> <span class="st">"15 min"</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Lab_Samples <span class="sc">%&gt;%</span> <span class="fu">select</span>(Time, Time_15_min))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Time         Time_15_min
+1 2023-01-26 14:52:00 2023-01-26 14:45:00
+2 2023-01-27 21:40:00 2023-01-27 21:30:00
+3 2023-01-27 21:47:00 2023-01-27 21:45:00
+4 2023-01-27 21:56:00 2023-01-27 21:45:00
+5 2023-02-02 08:43:00 2023-02-02 08:30:00
+6 2023-02-02 12:42:00 2023-02-02 12:30:00</code></pre>
+</div>
+</div>
+<p>Now we can merge the two datasets by the new timestamp. We probably don’t want all of the extra columns in the Lab_Samples or Nitrate_DF datasets, so we will limit this to the bare minimum using ‘select()’.</p>
+<p>The merging process will be carried out by the <em>‘merge()’</em> function, which is part of base R (you don’t need a package). We need to tell this function the name of the variable in each dataset that we are merging by. Merge will rename column headings ‘COLUMN.x’ or ‘COLUMN.y’ if the names are identical between the two datasets, which will result in ‘Value.x’ and ‘Value.y’ in the example below. Therefore, we have used the <em>‘rename()’</em> function to make these more intuitive.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>Merged_Nitrate_DF <span class="ot">&lt;-</span> <span class="fu">merge</span>(Lab_Samples <span class="sc">%&gt;%</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(Time_15_min,Value),</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>      Nitrate_DF <span class="sc">%&gt;%</span> <span class="fu">select</span>(Time,Value),</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">by.x=</span><span class="st">"Time_15_min"</span>,</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">by.y=</span><span class="st">"Time"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">"Lab"</span><span class="ot">=</span>Value.x, <span class="st">"Sensor"</span> <span class="ot">=</span> Value.y)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Merged_Nitrate_DF)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Time_15_min    Lab Sensor
+1 2023-01-26 14:45:00 1.4591 1.6277
+2 2023-01-27 21:30:00 1.4566 1.6341
+3 2023-01-27 21:45:00 1.4615 1.6303
+4 2023-01-27 21:45:00 1.4739 1.6303
+5 2023-02-02 08:30:00 1.1458 1.3033
+6 2023-02-02 12:30:00 1.1082 1.3076</code></pre>
+</div>
+</div>
+<p>Finally, let’s create a plot to see how these values compare to each other!</p>
+<hr>
+<p><strong><em>Challenge 8:</em></strong> <em>Create a simple geom_point plot that compares Lab readings and Sensor readings. Label the each axis with either ‘Sensor Nitrate (mg/l)’ or ‘Lab NNN (mg/l)’. Set the axis limits so they are the same using ‘xlim(1,1.75)’ and ‘ylim(1,1.75)’. Add a reference 1:1 line using ‘geom_abline(slope = 1,lty=2)’. Finally let’s add a linear model using ‘geom_smooth(method = ’lm’)’. What can you determine about the sensor vs lab relationship over this time period?</em></p>
+<details>
+<summary style="display: inline-block;">
+<p><b>Click to see a solution</b></p>
+</summary>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>Merged_Nitrate_DF <span class="sc">%&gt;%</span> </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>Lab,<span class="at">y=</span>Sensor))<span class="sc">+</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()<span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()<span class="sc">+</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Sensor Nitrate (mg/l)"</span>)<span class="sc">+</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Lab NNN (mg/l)"</span>)<span class="sc">+</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>,<span class="at">lty=</span><span class="dv">2</span>)<span class="sc">+</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">1</span>,<span class="fl">1.75</span>)<span class="sc">+</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">1</span>,<span class="fl">1.75</span>)<span class="sc">+</span></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">'lm'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="R_Tutorial_4_2025_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#it looks like the sensor slightly over-predicts at low concentrations and under-predicts at high concentrations. </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</details>
+<hr>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

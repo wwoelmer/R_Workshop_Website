@@ -1,5 +1,6 @@
 ---
 title: "Lesson 3 - Manipulating and plotting time series data in R"
+author: "Whitney Woelmer"
 format:
   html:
     toc: true
@@ -12,18 +13,17 @@ This lesson is designed to provide you with experience in manipulating and plott
 
 The main packages that we will use in this tutorial are:
 
-* __tidyverse__
-* __lubridate__
-* __BoPRC2025__
+-   **tidyverse**
+-   **lubridate**
+-   **BoPRC2025**
 
 Before attempting to install these packages, make sure your Primary CRAN Repository is set to:
 
-  * __"New Zealand [https] - University of Auckland"__  
-  
-To check this, click 'Tools' --> 'Global Options' --> 'Packages'.  Click 'Change' if you need to adjust this.
+-   **"New Zealand \[https\] - University of Auckland"**
 
-You can download most packages by clicking on  the 'Install' button on the 'packages' tab in the lower right window pane.  Then in the Install Packages popup, select ‘Repository (CRAN)’ from the ‘Install from’ drop box and type the name of the package you wish to download (e.g., dplyr). 
+To check this, click 'Tools' --\> 'Global Options' --\> 'Packages'. Click 'Change' if you need to adjust this.
 
+You can download most packages by clicking on the 'Install' button on the 'packages' tab in the lower right window pane. Then in the Install Packages popup, select ‘Repository (CRAN)’ from the ‘Install from’ drop box and type the name of the package you wish to download (e.g., dplyr).
 
 Once all of these packages are installed you can load them using the 'library' function:
 
@@ -33,8 +33,8 @@ library(lubridate)
 library(BoPRC2025) 
 ```
 
-
 First we will load in our data. This data has been downloaded from Aquarius using the R script which you can find at `scripts/download_data_aquarius.R` if you'd like to see how the data were downloaded. For today, we are skipping that step and reading in directly from a .csv file which was written after the Aquarius download.
+
 ```{r, message=FALSE}
 wq <- read.csv('./data/Lake_WQ_Timeseries.csv')
 ```
@@ -49,15 +49,18 @@ wq <- wq %>%
 One of the columns that we have selected is the `Time` column, which includes both a date and a time. It is always best practice is to format date/time objects with the appropriate timezone, otherwise R will assume a timezone, and that can lead to the wrong date being set for your timestamp. Here, we will use a function called `parse_date_time` which looks at the `Time` column, and then provides a list (using `c()`) of potential formats that the column will be in. Here, we list two formats, the first one has YMD and HMS (hours, minutes, seconds), the second one just has YMD, as some of the values in the `Time` column don't have an associated time next to the date. We pair this with the `mutate` function, which we will learn more about below.
 
 NOTE: there are many ways to format/parse dates and times in R. This is just one example!
+
 ```{r, message=FALSE}
 wq <- wq %>% mutate(Time = parse_date_time(Time,c("%Y-%m-%d %H:%M:%S","%Y-%m-%d"), tz = "etc/GMT+12"))
 
 ```
 
-___
+------------------------------------------------------------------------
+
 ***Challenge 1:*** *What is the structure of `wq` now that you have updated the Time column?*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -67,20 +70,23 @@ str(wq)
 # This shows that the Time column is now a POSIXct object
 
 ```
+
 </details>
 
-___
-
+------------------------------------------------------------------------
 
 Using the `unique` function, let's see what lakes which are included in this dataset.
+
 ```{r, message=FALSE}
 unique(wq$LocationName)
 ```
 
-___
+------------------------------------------------------------------------
+
 ***Challenge 2:*** *Using the same `unique` function, what water quality variables are included in this dataset, in the `Parameter` column?*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -90,11 +96,12 @@ unique(wq$Parameter)
 # This shows we have total nitrogen, total phosphorus, chlorophyll-a, and Secchi depth
 
 ```
+
 </details>
 
-___
+------------------------------------------------------------------------
 
-The names of the parameters have spaces and symbols in them which can be annoying to work with in R. Let's clean that up. We will use a function called `recode` which can be used to change the name of a value in a column. Here, we are saying take the `wq` dataframe, and mutate the column `Parameter` such that the values of `Parameter` which currently equal "TN (g/m^3)", will be rewritten as "TN_gm3". We will also do this for TP here.
+The names of the parameters have spaces and symbols in them which can be annoying to work with in R. Let's clean that up. We will use a function called `recode` which can be used to change the name of a value in a column. Here, we are saying take the `wq` dataframe, and mutate the column `Parameter` such that the values of `Parameter` which currently equal "TN (g/m\^3)", will be rewritten as "TN_gm3". We will also do this for TP here.
 
 ```{r message=FALSE,tidy=TRUE}
 wq <- wq %>% 
@@ -102,6 +109,7 @@ wq <- wq %>%
          Parameter = recode(Parameter, "TP (g/m^3)" = "TP_gm3"))
 
 ```
+
 As with anything in R, there are multiple ways to rename entries within a column like we have just done. We will rename the TN and TP values in the `Parameter` column using the `case_when` function so you can learn another method. Sometimes one method may be more intuitive to you than another.
 
 ```{r message=FALSE,tidy=TRUE}
@@ -114,10 +122,12 @@ wq <- wq %>%
 # provide case_when example
 ```
 
-___
+------------------------------------------------------------------------
+
 ***Challenge 3:*** *We have done this for TN and TP. Now try using the same method to rename chlorophyll-a and Secchi depth using either `recode` or `case_when`. Make sure to name the new columns `chla_mgm3` and `secchi_m` (we will use these same names later in the code so they will need to match!)*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -126,10 +136,13 @@ wq <- wq %>%
          Parameter = recode(Parameter, "VC - SD (m)" = "secchi_m"))
 
 ```
+
 </details>
-___
+
+------------------------------------------------------------------------
 
 Now let's make a plot of our data, using the `facet_wrap` function to display the different parameters
+
 ```{r message=FALSE,tidy=TRUE}
 ggplot(wq, aes(x = as.Date(Time), y = Value, color = LocationName)) +
   geom_point() +
@@ -140,6 +153,7 @@ ggplot(wq, aes(x = as.Date(Time), y = Value, color = LocationName)) +
 ```
 
 ### the `pivot_wider` function
+
 Let's say we're interested in a plot of chl-a, but we want to color it based on the Secchi depth in that lake. Our dataset is in long format, so in order to do this, we need to make it into wide format (e.g., instead of Parameters as a column, TN, TP, chla, and Secchi will be their own columns, with the values in that column). We will use the `pivot_wider` function to do this, where you give the function the name of the column where the new columns will come from (here `names_from = 'Parameter'`), and the name of the column where the actual numbers will come from (here `values_from = 'Value'`)
 
 ```{r message=FALSE,tidy=TRUE}
@@ -148,6 +162,7 @@ wq_wide <- wq %>%
   pivot_wider(names_from = 'Parameter', values_from = 'Value')
 
 ```
+
 That threw some warnings, so let's look at the dataframe and see if everything looks ok. When we open up `wq_wide`, we see there are a lot of "NULL" values for the different columns--that doesn't look right. That is because our `Time` column is very specific, and includes not just dates but times which are not common across all the parameters. The time components isn't really important in this case. We also have the `Unit` column, which is not the same across parameters and is causing an issue. Let's create a `Date` column, remove `Time` and `Unit`, and try making the dataframe wide again
 
 ```{r message=FALSE,tidy=TRUE}
@@ -158,9 +173,11 @@ wq_wide <- wq %>%
   pivot_wider(names_from = 'Parameter', values_from = 'Value')
 
 ```
+
 Hmm, that still throws a warning. If we look at `wq_wide` again, we see that there are some columns which have two values in them (e.g., Lake Rotoma on 2015-01-20 has two entries for TP). To fix this, let's take the average on a given day for a given lake if there is more than one reading. We will need to introduce a couple of new functions to accomplish this.
 
 ### The `group_by` and `summarise` functions
+
 `group_by` is a `tidyverse` function which allows you to do calculations by different groups (e.g., the LocationName column). It is usually paired with another function which does the calculation. For example, `summarise` is another `tidyverse` function which, as it sounds, summarises by a given function. I often use this to take the mean, minimum, or some other summary statistic. This function results in a shorter dataframe, because you've summarised the values by your grouping factors. We will pair `group_by` with `summarise` to create summary statistics for each lake.
 
 ```{r message=FALSE}
@@ -176,7 +193,6 @@ wq_wide <- wq %>%
 
 Viola! No warnings and our dataframe looks good (make sure you look at it)!! Ok, now let's make a plot of chl-a over time, but colored in by Secchi (our original goal before all that data manipulation...)
 
-
 ```{r message=FALSE,tidy=TRUE}
 
 wq_wide %>% 
@@ -191,11 +207,13 @@ wq_wide %>%
 # scale_color_distiller changes the color scheme,  you can google scale_color_distiller to find out other palettes you can use, direction = 2 just changes whether the scales goes from blue to yellow with blue as high or low, in this case, we want blue to be high. try changing direction = 1 and see what happens
 
 ```
-___
+
+------------------------------------------------------------------------
 
 ***Challenge 4a:*** *Now that we've used `pivot_wider`, try to use pivot_longer to turn your dataframe back into longer format*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -206,15 +224,17 @@ wq_long <- wq_wide %>%
 
 # being able to pivot between wide and long format is really helpful for different types of analyses and plotting!
 ```
+
 </details>
-___
 
+------------------------------------------------------------------------
 
-___
+------------------------------------------------------------------------
 
 ***Challenge 4b:*** *Now that you've made your wq_long dataframe, try making a plot with Date on the x-axis, Value on the y-axis, color by LocationName, and facet_wrap by Parameter. Use `geom_line` instead of `geom_point`*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -224,8 +244,10 @@ ggplot(wq_long, aes(x = as.Date(Date), y = Value, color = LocationName)) +
   theme_bw() +
   scale_y_log10()
 ```
+
 </details>
-___
+
+------------------------------------------------------------------------
 
 ### Calculating annual means
 
@@ -244,6 +266,7 @@ wq_summary <- wq %>%
 ```
 
 Often, we actually need to calculate annual averages by the hydroyear, instead of the year. To do this, let's use the `Bathing_Season` function in the `BoPRC2025` package, which calculates the hydroyear.
+
 ```{r message=FALSE, tidy=TRUE}
 wq_summary <- wq %>% 
   #mutate(year = year(Time)) %>% 
@@ -272,11 +295,12 @@ wq_summary %>%
         
 ```
 
-___
+------------------------------------------------------------------------
 
 ***Challenge 5:*** *That's a lot of lakes to wrap your head around. For this challenge, create a plot for just Lake Rotorua at Site 2, and facet by Parameter*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -290,9 +314,10 @@ wq_summary %>%
   theme(axis.text.x = element_text(angle = 75, hjust = 1)) # this rotates the x-axis label since the LocationNames are long
 
 ```
-</details>
-___
 
+</details>
+
+------------------------------------------------------------------------
 
 We can also add the standard deviation as error bars using `geom_errorbar`.
 
@@ -342,10 +367,10 @@ ggplot(wq, aes(x = season, y = Value)) +
 
 ```
 
-
 ***Challenge 6:*** *It's nice to see the boxplots, but we want the actual numbers for median, min, max, etc.. Calculate summary statistics for each lake, season, and parameter. HINT: We will bring back our friends `group_by` and `summarise` for this.*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -361,10 +386,13 @@ wq_season_summary <- wq %>%
 
 # Open up your dataframe and see if all looks good. There should be one value for each season, lake, and parameter
 ```
+
 </details>
-___
+
+------------------------------------------------------------------------
 
 ### BONUS: plotting annual means again NPSFM bands
+
 We have a dataframe with the ranges of the NPSFM bands for each variable. We will need to read this in, merge together with our `wq_summary` dataframe, which has the annual median values for each variable. Then we will plot the data. But first we will have to do a little data manipulating...
 
 ```{r message=FALSE,tidy=TRUE}
@@ -376,6 +404,7 @@ bands <- bands %>%
   rename(Parameter = variable)
 
 ```
+
 The values of TN and TP in `bands$Parameter` are in mg/m3, whereas in `wq_summary` they are in g/m3. We need to first convert TN and TP in `wq_summary` into mg/m3 before we can merge the two dataframes together.
 
 ```{r message=FALSE,tidy=TRUE}
@@ -387,6 +416,7 @@ wq_summary <- wq_summary %>%
                             'TP_gm3' = 'TP_mgm3'))
 print(unique(wq_summary$Parameter))
 ```
+
 Now that we have the columns in both of the dataframes `wq_summary` and `bands` set up properly, we can combine the two dataframes using the function `left_join`. This is another tidyverse function that merges two dataframes based on one or more common columns. It will keep all the rows from the first (left) dataframe and add any matching information in the second (right) dataframe. Here the matching columns is `Parameter`
 
 ```{r message=FALSE,tidy=TRUE}
@@ -394,9 +424,11 @@ Now that we have the columns in both of the dataframes `wq_summary` and `bands` 
 nof <- left_join(wq_summary, bands, by = 'Parameter')
 
 ```
+
 This gives us a warning that there are "many-to-many relationships between x and y." Sometimes this warning means that there is something wrong with your dataframe merge, but in this case, this is actually ok. It is telling us that in `bands` there are multiple matches for a single value of `Parameter` in `wq_summary`. That is because there are four values of `bands$band` (a, b, c, and d) which correspond to a single row in `wq_summary`. This has resulted in our new dataframe `nof` being much longer than the original `wq_summary` but that is expected behavior so we can ignore this warning.
 
 Now that we have our matching dataframe, we need to create maximum and minimum x values for which the color shading will be mapped onto our plot. These simply need to correspond to maximum and minimum years of our dataframe
+
 ```{r message=FALSE,tidy=TRUE}
 nof <- nof %>% 
   group_by(Parameter) %>% 
@@ -428,12 +460,10 @@ ggplot(nof, aes(x = hydroyear, y = median, color = as.factor(LocationName))) +
 
 ```
 
-
-
-
 ***Challenge 7:*** *Secchi depth is not currently assessed as part of the NPSFM. Let's remove it from our plot using the `filter` function:*
 
 <details>
+
 <summary>Click to see a solution</summary>
 
 ```{r message=FALSE,tidy=TRUE}
@@ -458,5 +488,7 @@ ggplot(aes(x = hydroyear, y = median, color = as.factor(LocationName))) +
 
 
 ```
+
 </details>
-___
+
+------------------------------------------------------------------------

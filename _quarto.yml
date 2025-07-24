@@ -11,11 +11,17 @@ website:
         text: Home
       - about.qmd
       - href: workshops/R_Tutorial_1_2025.qmd
-        text: "Lesson 1: Fundamentals of R"
+        text: "Lesson 1"
+      - href: workshops/R_Tutorial_2_2025.qmd
+        text: "Lesson 2"
       - href: workshops/R_Tutorial_3_2025.qmd
-        text: "Lesson 3: Manipulating and plotting data in R"
+        text: "Lesson 3"
+      - href: workshops/R_Tutorial_4_2025.qmd
+        text: "Lesson 4"
       - href: workshops/R_Tutorial_5_2025.qmd
-        text: "Lesson 5: Statistical analyses in R"
+        text: "Lesson 5"
+      - href: workshops/R_Tutorial_6_2025.qmd
+        text: "Lesson 6"
 
 format:
   html:

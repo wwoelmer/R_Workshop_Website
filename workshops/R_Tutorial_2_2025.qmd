@@ -1,0 +1,10 @@
+---
+title: "Lesson 2: Introduction to BOPRC's Interal Databases and Packages"
+author: "James Dare"
+format:
+  html:
+    toc: true
+    number-sections: true
+---
+
+These packages are only used by the Bay of Plenty Regional Council (BOPRC) and are therefore not publicly available. Please see [Lesson 2: Introduction to BOPRC's Interal Databases and Packages](https://github.com/JamesBOPRC/BOPRC_R_Course_Lesson_2) for a vignette on this tutorial.

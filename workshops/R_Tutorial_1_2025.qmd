@@ -1,5 +1,6 @@
 ---
 title: "Lesson 1 - Fundamentals of R"
+author: "Whitney Woelmer"
 format:
   html:
     toc: true

@@ -1,5 +1,5 @@
 ---
-title: "Lesson 2: Introduction to BOPRC's Interal Databases and Packages"
+title: "Lesson 2: Introduction to BOPRC's Internal Databases and Packages"
 author: "James Dare"
 format:
   html:
